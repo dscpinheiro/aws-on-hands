@@ -5,14 +5,13 @@ Parameters:
     MinLength: 6
     MaxLength: 18
     AllowedPattern: "[a-zA-Z][a-zA-Z0-9]*"
-  Group:
-    Description: Group to include this user
-    Type: String
+  Groups:
+    Description: Groups where this user should be included
+    Type: CommaDelimitedList
 
 Resources:
   MyUser:
     Type: AWS::IAM::User
     Properties:
-      Groups:
-        - !Ref Group
+      Groups: !Ref Groups
       UserName: !Ref UserName
