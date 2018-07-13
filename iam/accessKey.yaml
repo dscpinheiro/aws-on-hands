@@ -1,0 +1,20 @@
+Parameters:
+  UserName:
+    Description: The IAM username this key will be associated with
+    Type: String
+    MinLength: 6
+    MaxLength: 18
+    AllowedPattern: "[a-zA-Z][a-zA-Z0-9]*"
+
+Resources:
+  MyAccessKey:
+    Type: AWS::IAM::AccessKey
+    Properties:
+      UserName:
+        !Ref UserName
+
+Outputs:
+  AccessKey:
+    Value: !Ref MyAccessKey
+  SecretKey:
+    Value: !GetAtt MyAccessKey.SecretAccessKey

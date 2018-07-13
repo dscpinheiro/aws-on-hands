@@ -1,0 +1,18 @@
+Parameters:
+  UserName:
+    Description: The IAM username
+    Type: String
+    MinLength: 6
+    MaxLength: 18
+    AllowedPattern: "[a-zA-Z][a-zA-Z0-9]*"
+  Group:
+    Description: Group to include this user
+    Type: String
+
+Resources:
+  MyUser:
+    Type: AWS::IAM::User
+    Properties:
+      Groups:
+        - !Ref Group
+      UserName: !Ref UserName
