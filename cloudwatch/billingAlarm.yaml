@@ -1,0 +1,32 @@
+Parameters:
+  AlarmThreshold:
+    Description: "Threshold ($) for this billing alarm"
+    Type: Number
+  SnsTopicArn:
+    Description: "ARN of the topic that will receive a message when this alarm transitions into an ALARM state"
+    Type: String
+    
+Resources:
+  BillingAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmName: !Sub
+        "BillingAlarm_${AlarmThreshold}Dollars"
+      AlarmDescription: !Sub >
+        "Alarm if AWS spending is over $${AlarmThreshold}"
+      Namespace: AWS/Billing
+      MetricName: EstimatedCharges
+      Dimensions:
+        - Name: Currency
+          Value: USD
+      Statistic: Maximum
+      Period: 3600
+      EvaluationPeriods: 1
+      Threshold: !Ref AlarmThreshold
+      ComparisonOperator: GreaterThanThreshold
+      AlarmActions:
+        - !Ref SnsTopicArn
+
+Outputs:
+  AlarmArn:
+    Value: !GetAtt BillingAlarm.Arn
