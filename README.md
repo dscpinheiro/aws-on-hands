@@ -9,6 +9,8 @@ The list is based on this great Reddit post: https://www.reddit.com/r/sysadmin/c
     - [x] Set up Billing Alerts
     - [x] Configure the AWS CLI for your user
 2. Web Hosting Basics
+    - [x] Deploy a EC2 VM and host a simple static web page
+    - [x] Take a snapshot of your VM, delete the VM, and deploy a new one from the snapshot. Basically disk backup + disk restore
 3. Auto Scaling
 4. External Data
 5. Web Hosting Platform-as-a-Service
