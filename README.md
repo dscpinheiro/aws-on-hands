@@ -16,7 +16,7 @@ The list is based on this great Reddit post: https://www.reddit.com/r/sysadmin/c
     - [x] Put a Elastic Load Balancer in front of that ASG
 4. External Data
     - [x] Create a DynamoDB table and experiment with loading and retrieving data manually, then do the same via a script on your local machine
-    - [ ] Refactor your static page so that it reads/updates the AWS DynamoDB table (Hint: EC2 Instance Role)
+    - [x] Refactor your static page so that it reads/updates the AWS DynamoDB table (Hint: EC2 Instance Role)
 5. Web Hosting Platform-as-a-Service
 6. Microservices
 7. Serverless
