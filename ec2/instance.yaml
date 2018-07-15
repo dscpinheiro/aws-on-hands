@@ -59,10 +59,10 @@ Resources:
       UserData: 
         Fn::Base64: !Sub |
           #!/bin/bash
-          sudo yum -y install httpd
-          sudo service httpd start
+          yum -y install httpd
+          service httpd start
           chkconfig httpd on
-          sudo echo "Hello from CloudFormation!" > /var/www/html/index.html
+          echo "Hello from CloudFormation!" > /var/www/html/index.html
 
 Outputs:
   InstanceId:
