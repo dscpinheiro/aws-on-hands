@@ -13,7 +13,7 @@ Parameters:
       - t2.micro
       - t2.large
   AmiId:
-    Description: AMI id to use for this instance
+    Description: AMI id to use for this ASG
     Type: AWS::EC2::Image::Id
     Default: ami-a9d09ed1
   KeyPair:
