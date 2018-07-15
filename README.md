@@ -15,7 +15,7 @@ The list is based on this great Reddit post: https://www.reddit.com/r/sysadmin/c
     - [x] Create an AMI from that VM and put it in an autoscaling group so one VM always exists
     - [x] Put a Elastic Load Balancer in front of that ASG
 4. External Data
-    - [ ] Create a DynamoDB table and experiment with loading and retrieving data manually, then do the same via a script on your local machine
+    - [x] Create a DynamoDB table and experiment with loading and retrieving data manually, then do the same via a script on your local machine
     - [ ] Refactor your static page so that it reads/updates the AWS DynamoDB table (Hint: EC2 Instance Role)
 5. Web Hosting Platform-as-a-Service
 6. Microservices
