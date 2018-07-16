@@ -2,6 +2,8 @@ Parameters:
   AlarmThreshold:
     Description: "Threshold ($) for this billing alarm"
     Type: Number
+    MinValue: 10
+    MaxValue: 1000
   SnsTopicArn:
     Description: "ARN of the topic that will receive a message when this alarm transitions into an ALARM state"
     Type: String
