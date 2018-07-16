@@ -18,6 +18,8 @@ The list is based on this great Reddit post: https://www.reddit.com/r/sysadmin/c
     - [x] Create a DynamoDB table and experiment with loading and retrieving data manually, then do the same via a script on your local machine
     - [x] Refactor your static page so that it reads/updates the AWS DynamoDB table (Hint: EC2 Instance Role)
 5. Web Hosting Platform-as-a-Service
+    - [ ] Deploy an application on ElasticBeanstalk
+    - [ ] Create a S3 static website
 6. Microservices
 7. Serverless
 8. Cost Analysis

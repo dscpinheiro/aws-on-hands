@@ -1,0 +1,43 @@
+Resources:
+  MyApplication:
+    Type: AWS::ElasticBeanstalk::Application
+    Properties:
+      Description: AWS Elastic Beanstalk Sample Application
+  
+  MyApplicationVersion:
+    Type: AWS::ElasticBeanstalk::ApplicationVersion
+    Properties:
+      Description: AWS ElasticBeanstalk Sample Application Version
+      ApplicationName: !Ref MyApplication
+      SourceBundle:
+        S3Bucket: !Sub "elasticbeanstalk-samples-${AWS::Region}"
+        S3Key: php-sample.zip
+
+  MyConfigurationTemplate:
+    Type: AWS::ElasticBeanstalk::ConfigurationTemplate
+    Properties:
+      ApplicationName: !Ref MyApplication
+      Description: AWS ElasticBeanstalk Sample Configuration Template
+      OptionSettings:
+      - Namespace: aws:autoscaling:asg
+        OptionName: MinSize
+        Value: 1
+      - Namespace: aws:autoscaling:asg
+        OptionName: MaxSize
+        Value: 3
+      - Namespace: aws:elasticbeanstalk:environment
+        OptionName: EnvironmentType
+        Value: LoadBalanced
+      SolutionStackName: 64bit Amazon Linux running PHP 5.3
+
+  MyEnvironment:
+    Type: AWS::ElasticBeanstalk::Environment
+    Properties:
+      ApplicationName: !Ref MyApplication
+      Description: AWS ElasticBeanstalk Sample Environment
+      TemplateName: !Ref MyConfigurationTemplate
+      VersionLabel: !Ref MyApplicationVersion
+
+Outputs:
+  EndPoint:
+    Value: !GetAtt MyEnvironment.EndpointURL
