@@ -19,7 +19,7 @@ The list is based on this great Reddit post: https://www.reddit.com/r/sysadmin/c
     - [x] Refactor your static page so that it reads/updates the AWS DynamoDB table (Hint: EC2 Instance Role)
 5. Web Hosting Platform-as-a-Service
     - [x] Deploy an application on ElasticBeanstalk
-    - [ ] Create a S3 static website
+    - [x] Create a S3 static website
     - [ ] Register a domain. Set Route53 as the Nameservers and use Route53 for DNS. Make www.yourdomain.com go to your Elastic Beanstalk. Make static.yourdomain.com serve data from the S3 bucket
     - [ ] Enable SSL for your Static S3 Website (Hint: CloudFront + ACM)
     - [ ] Enable SSL for your Elastic Beanstalk Website
@@ -32,6 +32,7 @@ The list is based on this great Reddit post: https://www.reddit.com/r/sysadmin/c
     - [ ] Explore and implement a Continuous Delivery pipeline
     - [ ] Develop a CI/CD pipeline to automatically update a dev deployment of your infrastructure when new code is published, and then build a workflow to update the production version if approved
 9. Misc
+    - [ ] Kinesis
     - [ ] KMS
     - [ ] More complex IAM policies
     - [ ] Networking (creating VPC from scratch)
