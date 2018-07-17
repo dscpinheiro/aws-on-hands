@@ -34,6 +34,7 @@ The list is based on this great Reddit post: https://www.reddit.com/r/sysadmin/c
 9. Misc
     - [ ] Kinesis
     - [ ] KMS
+    - [ ] SNS / SQS
     - [ ] More complex IAM policies
     - [ ] Networking (creating VPC from scratch)
     - [ ] Terraform for provisioning infrastructure
