@@ -29,12 +29,12 @@ Resources:
       GroupDescription: Enable access via SSH and HTTP
       SecurityGroupIngress:
       - IpProtocol: tcp
-        FromPort: '80'
-        ToPort: '80'
+        FromPort: 80
+        ToPort: 80
         CidrIp: 0.0.0.0/0
       - IpProtocol: tcp
-        FromPort: '22'
-        ToPort: '22'
+        FromPort: 22
+        ToPort: 22
         CidrIp: !Ref SSHLocation
 
   Ec2Instance:
@@ -78,8 +78,8 @@ Resources:
                 enabled: true
                 ensureRunning: true
                 files:
-                  - "/etc/cfn/cfn-hup.conf"
-                  - "/etc/cfn/hooks.d/cfn-auto-reloader.conf"
+                  - /etc/cfn/cfn-hup.conf
+                  - /etc/cfn/hooks.d/cfn-auto-reloader.conf
     Properties:
       ImageId: !Ref AmiId
       KeyName: !Ref KeyPair
@@ -94,7 +94,7 @@ Resources:
           /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource Ec2Instance --region ${AWS::Region}
     CreationPolicy:
       ResourceSignal:
-        Timeout: "PT5M"
+        Timeout: PT5M
 
 Outputs:
   InstanceId:

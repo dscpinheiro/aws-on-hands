@@ -10,8 +10,8 @@ Resources:
       GroupDescription: Enable access via HTTP
       SecurityGroupIngress:
       - IpProtocol: tcp
-        FromPort: "80"
-        ToPort: "80"
+        FromPort: 80
+        ToPort: 80
         CidrIp: 0.0.0.0/0
 
   Ec2Instance1:
@@ -23,7 +23,7 @@ Resources:
         - !Ref SecurityGroup
       Tags:
         - Key: Name
-          Value: !Sub "CF-WebServer1-R53"
+          Value: CF-WebServer1-R53
       UserData: 
         Fn::Base64: !Sub |
           #!/bin/bash
@@ -40,7 +40,7 @@ Resources:
         - !Ref SecurityGroup
       Tags:
         - Key: Name
-          Value: !Sub "CF-WebServer2-R53"
+          Value: CF-WebServer2-R53
       UserData: 
         Fn::Base64: !Sub |
           #!/bin/bash

@@ -39,13 +39,13 @@ Resources:
       GroupDescription: Enable access via SSH and HTTP (but only to the ELB)
       SecurityGroupIngress:
       - IpProtocol: tcp
-        FromPort: '80'
-        ToPort: '80'
+        FromPort: 80
+        ToPort: 80
         SourceSecurityGroupId:
           !Ref LoadBalancerSecurityGroup
       - IpProtocol: tcp
-        FromPort: '22'
-        ToPort: '22'
+        FromPort: 22
+        ToPort: 22
         CidrIp: !Ref SSHLocation
   LoadBalancerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -54,8 +54,8 @@ Resources:
       GroupDescription: Enable access via HTTP
       SecurityGroupIngress:
       - IpProtocol: tcp
-        FromPort: '80'
-        ToPort: '80'
+        FromPort: 80
+        ToPort: 80
         CidrIp: 0.0.0.0/0
 
   LaunchConfig:
@@ -74,7 +74,7 @@ Resources:
           echo "Hello from CloudFormation - ASG + ELB - $(ec2-metadata -i)!" > /var/www/html/index.html
 
   AutoScalingGroup:
-    Type: "AWS::AutoScaling::AutoScalingGroup"
+    Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
       AutoScalingGroupName: !Ref AutoScalingGroupName
       MinSize: 2

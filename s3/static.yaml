@@ -1,6 +1,6 @@
 Resources:
   S3Bucket:
-    Type: "AWS::S3::Bucket"
+    Type: AWS::S3::Bucket
     Properties:
       AccessControl: PublicRead
       WebsiteConfiguration:
@@ -8,7 +8,7 @@ Resources:
     DeletionPolicy: Retain
 
   BucketPolicy:
-    Type: "AWS::S3::BucketPolicy"
+    Type: AWS::S3::BucketPolicy
     Properties:
       PolicyDocument:
         Version: "2012-10-17"
@@ -16,12 +16,8 @@ Resources:
           - Sid: PublicRead
             Effect: Allow
             Principal: "*"
-            Action: "s3:GetObject"
-            Resource: !Join 
-              - ""
-              - - "arn:aws:s3:::"
-                - !Ref S3Bucket
-                - /*
+            Action: s3:GetObject
+            Resource: !Join ["", ["arn:aws:s3:::", !Ref S3Bucket, "/*"]]
       Bucket: !Ref S3Bucket
 
 Outputs:

@@ -36,12 +36,12 @@ Resources:
       GroupDescription: Enable access via SSH and HTTP
       SecurityGroupIngress:
       - IpProtocol: tcp
-        FromPort: '80'
-        ToPort: '80'
+        FromPort: 80
+        ToPort: 80
         CidrIp: 0.0.0.0/0
       - IpProtocol: tcp
-        FromPort: '22'
-        ToPort: '22'
+        FromPort: 22
+        ToPort: 22
         CidrIp: !Ref SSHLocation
 
   LaunchConfig:
@@ -60,7 +60,7 @@ Resources:
           echo "Hello from CloudFormation - ASG!" > /var/www/html/index.html
 
   AutoScalingGroup:
-    Type: "AWS::AutoScaling::AutoScalingGroup"
+    Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
       AutoScalingGroupName: !Ref AutoScalingGroupName
       MinSize: 1

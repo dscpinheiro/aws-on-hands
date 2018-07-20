@@ -45,29 +45,29 @@ Resources:
         CidrIp: !Ref SSHLocation
 
   InstanceProfile:
-    Type: "AWS::IAM::InstanceProfile"
+    Type: AWS::IAM::InstanceProfile
     Properties:
       Roles: 
-        - Ref: "InstanceRole"
+        - !Ref InstanceRole
   
   InstanceRole:
-    Type: "AWS::IAM::Role"
+    Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument: 
         Version: "2012-10-17"
         Statement: 
-          - Effect: "Allow"
+          - Effect: Allow
             Principal: 
               Service: 
-                - "ec2.amazonaws.com"
+                - ec2.amazonaws.com
             Action: 
-              - "sts:AssumeRole"
+              - sts:AssumeRole
       Policies: 
-        - PolicyName: "DynamoDbReadOnly"
+        - PolicyName: DynamoDbReadOnly
           PolicyDocument: 
             Version: "2012-10-17"
             Statement: 
-              - Effect: "Allow"
+              - Effect: Allow
                 Action: 
                   - dynamodb:ListTables
                 Resource: "*"
@@ -83,7 +83,7 @@ Resources:
         - !Ref SecurityGroup
       Tags:
         - Key: Name
-          Value: !Sub "CF-InstanceRole"
+          Value: CF-InstanceRole
       IamInstanceProfile: !Ref InstanceProfile
       UserData: 
         Fn::Base64: !Sub |

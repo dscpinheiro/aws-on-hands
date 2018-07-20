@@ -16,8 +16,8 @@ Resources:
       GroupDescription: Enable access via HTTP
       SecurityGroupIngress:
       - IpProtocol: tcp
-        FromPort: '80'
-        ToPort: '80'
+        FromPort: 80
+        ToPort: 80
         CidrIp: 0.0.0.0/0
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
