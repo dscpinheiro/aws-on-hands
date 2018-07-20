@@ -1,0 +1,70 @@
+Parameters:
+  HostedZoneName:
+    Description: Hosted zone in which the record sets will be created
+    Type: String
+
+Resources:
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable access via HTTP
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: "80"
+        ToPort: "80"
+        CidrIp: 0.0.0.0/0
+
+  Ec2Instance1:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-a9d09ed1
+      InstanceType: t2.micro
+      SecurityGroupIds:
+        - !Ref SecurityGroup
+      Tags:
+        - Key: Name
+          Value: !Sub "CF-WebServer1-R53"
+      UserData: 
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          yum -y install httpd
+          service httpd start
+          chkconfig httpd on
+          echo "Hello from CloudFormation - Instance 1!" > /var/www/html/index.html
+  Ec2Instance2:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-a9d09ed1
+      InstanceType: t2.micro
+      SecurityGroupIds:
+        - !Ref SecurityGroup
+      Tags:
+        - Key: Name
+          Value: !Sub "CF-WebServer2-R53"
+      UserData: 
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          yum -y install httpd
+          service httpd start
+          chkconfig httpd on
+          echo "Hello from CloudFormation - Instance 2!" > /var/www/html/index.html
+
+  RecordSet:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneName: !Join ["", [!Ref HostedZoneName, .]]
+      RecordSets:
+        - Name: !Join ["", ["weighted", ., !Ref "HostedZoneName", .]]
+          Type: A
+          TTL: 900
+          SetIdentifier: Web Server 1
+          Weight: 4
+          ResourceRecords:
+            - !GetAtt Ec2Instance1.PublicIp
+        - Name: !Join ["", ["weighted", ., !Ref "HostedZoneName", .]]
+          Type: A
+          TTL: 900
+          SetIdentifier: Web Server 2
+          Weight: 6
+          ResourceRecords:
+            - !GetAtt Ec2Instance2.PublicIp
