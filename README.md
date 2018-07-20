@@ -22,9 +22,9 @@ All CloudFormation templates were created in the Oregon (us-west-2) region.
 5. Web Hosting Platform-as-a-Service
     - [x] Deploy an application on ElasticBeanstalk
     - [x] Create a S3 static website
-    - [ ] Register a domain. Set Route53 as the Nameservers and use Route53 for DNS. Make www.yourdomain.com go to your Elastic Beanstalk. Make static.yourdomain.com serve data from the S3 bucket
+    - [x] Register a domain. Set Route53 as the Nameservers and use Route53 for DNS. Make www.yourdomain.com go to your Elastic Beanstalk. Make static.yourdomain.com serve data from the S3 bucket
     - [ ] Enable SSL for your Static S3 Website (Hint: CloudFront + ACM)
-    - [ ] Enable SSL for your Elastic Beanstalk Website
+    - [x] Enable SSL for your Elastic Beanstalk Website
 6. Microservices
     - [ ] Create an API that has POST/GET bindings to update/retrieve data from DynamoDB
 7. Serverless
