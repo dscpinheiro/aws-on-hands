@@ -26,7 +26,7 @@ All CloudFormation templates were created in the Oregon (us-west-2) region.
     - [x] Enable SSL for your Static S3 Website (Hint: CloudFront + ACM)
     - [x] Enable SSL for your Elastic Beanstalk Website
 6. Microservices
-    - [ ] Create an API that has POST/GET bindings to update/retrieve data from DynamoDB
+    - [x] Create an API that has POST/GET bindings to update/retrieve data from DynamoDB
 7. Serverless
     - [ ] Write a AWS Lambda function to run every night. Implement Least Privilege security for the Lambda Role. (Hint: Lambda using Python 3, Boto3, Amazon SES, scheduled with CloudWatch)
     - [ ] Implement API Gateway to interact with Lambda
