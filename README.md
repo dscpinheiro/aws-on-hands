@@ -28,7 +28,7 @@ All CloudFormation templates were created in the Oregon (us-west-2) region.
 6. Microservices
     - [x] Create an API that has POST/GET bindings to update/retrieve data from DynamoDB
 7. Serverless
-    - [ ] Write a AWS Lambda function to run every night. Implement Least Privilege security for the Lambda Role. (Hint: Lambda using Python 3, Boto3, Amazon SES, scheduled with CloudWatch)
+    - [x] Write a AWS Lambda function to run every night. Implement Least Privilege security for the Lambda Role. (Hint: Lambda using Python 3, Boto3, Amazon SES, scheduled with CloudWatch)
     - [ ] Implement API Gateway to interact with Lambda
 8. Continuous Delivery
     - [ ] Explore and implement a Continuous Delivery pipeline
