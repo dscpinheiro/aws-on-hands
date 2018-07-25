@@ -36,7 +36,7 @@ All CloudFormation templates were created in the Oregon (us-west-2) region.
 9. Misc
     - [ ] Kinesis
     - [ ] KMS
-    - [ ] SNS / SQS
+    - [x] SNS / SQS
     - [ ] More complex IAM policies
     - [ ] Networking (creating VPC from scratch)
     - [ ] troposphere (https://github.com/cloudtools/troposphere)
