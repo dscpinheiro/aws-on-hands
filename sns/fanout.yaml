@@ -1,0 +1,42 @@
+Parameters:
+  Email:
+    Description: Email to include in the topic subscription list
+    Type: String
+
+Resources:
+  MyQueue1:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: MySampleQueue1
+      DelaySeconds: 3
+      MessageRetentionPeriod: 604800
+      VisibilityTimeout: 600
+
+  MyQueue2:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: MySampleQueue2
+      MaximumMessageSize: 262144
+      ReceiveMessageWaitTimeSeconds: 20
+      VisibilityTimeout: 300
+
+  MySnsTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: Sample topic that sends messages to two SQS queues
+      TopicName: FanoutTopic
+      Subscription: 
+        - Endpoint: !GetAtt MyQueue1.Arn
+          Protocol: sqs
+        - Endpoint: !GetAtt MyQueue2.Arn
+          Protocol: sqs
+        - Endpoint: !Ref Email
+          Protocol: email
+
+Outputs:
+  Queue1URL:
+    Value: !Ref MyQueue1
+  Queue2URL:
+    Value: !Ref MyQueue2
+  TopicArn:
+    Value: !Ref MySnsTopic
