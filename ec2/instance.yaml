@@ -57,7 +57,7 @@ Resources:
         - Key: Name
           Value: !Sub "CF-${AWS::StackName}"
       UserData: 
-        Fn::Base64: !Sub |
+        Fn::Base64: |
           #!/bin/bash
           yum -y install httpd
           service httpd start

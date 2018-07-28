@@ -52,7 +52,7 @@ Resources:
       InstanceType: !Ref InstanceType
       SecurityGroups: [!Ref SecurityGroup]
       UserData:
-        Fn::Base64: !Sub |
+        Fn::Base64: |
           #!/bin/bash
           yum -y install httpd
           service httpd start
