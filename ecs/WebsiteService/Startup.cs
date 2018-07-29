@@ -23,7 +23,7 @@ namespace aspnetapp
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var serviceUri = Environment.GetEnvironmentVariable("ProductsServiceUri") ?? Configuration["ProductsServiceUri"];
+            var serviceUri = Environment.GetEnvironmentVariable("PRODUCT_SERVICE_URL") ?? Configuration["ProductsServiceUri"];
             services.AddHttpClient<ProductsClient>(client => client.BaseAddress = new Uri(serviceUri));
             
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
