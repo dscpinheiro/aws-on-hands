@@ -1,3 +1,5 @@
+# Dockerfile based on https://docs.docker.com/engine/examples/dotnetcore/
+
 FROM microsoft/dotnet:2.1-sdk AS build-env
 WORKDIR /app
 
