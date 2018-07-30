@@ -329,23 +329,18 @@ Outputs:
   Cluster:
     Description: A reference to the ECS cluster
     Value: !Ref ECSCluster
-
   ECSServiceAutoScalingRole:
     Description: A reference to ECS service auto scaling role
     Value: !GetAtt ECSServiceAutoScalingRole.Arn
-
   ECSAutoScalingGroupName:
     Description: A reference to ECS AutoScaling Group Name
     Value: !Ref ECSAutoScalingGroup
-
   LoadBalancer:
     Description: A reference to the Application Load Balancer
     Value: !Ref LoadBalancer
-
   LoadBalancerUrl:
     Description: The URL of the ALB
     Value: !GetAtt LoadBalancer.DNSName
-
   Listener:
     Description: A reference to a port 80 listener
     Value: !Ref LoadBalancerListener
