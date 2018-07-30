@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace aspnetapp.Controllers
 {
-    [ApiController, Route("[controller]")]
+    [ApiController, Route("api/products")]
     public class ProductsController : ControllerBase
     {
         private static readonly IEnumerable<Product> _products;

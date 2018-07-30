@@ -60,7 +60,7 @@ Resources:
       Matcher: 
         HttpCode: 200-299
       HealthCheckIntervalSeconds: 10
-      HealthCheckPath: /products
+      HealthCheckPath: /api/products
       HealthCheckProtocol: HTTP
       HealthCheckTimeoutSeconds: 5
       HealthyThresholdCount: 2
@@ -72,7 +72,7 @@ Resources:
       Conditions:
         - Field: path-pattern
           Values: 
-            - /products*
+            - /api/products*
       Actions:
         - TargetGroupArn: !Ref TargetGroup
           Type: forward
