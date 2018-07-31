@@ -30,6 +30,9 @@ Resources:
           Essential: true
           Image: !Ref ImageUrl
           Memory: 128
+          Environment:
+            - Name: SOME_ENV_VAR
+              Value: foo123
           PortMappings:
             - ContainerPort: 80
           LogConfiguration:
