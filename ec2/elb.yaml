@@ -154,6 +154,15 @@ Resources:
       Port: 80
       Protocol: HTTP
       VpcId: !Ref VpcId
+      TargetGroupAttributes:
+        - Key: stickiness.enabled
+          Value: true
+        - Key: stickiness.type
+          Value: lb_cookie
+        - Key: stickiness.lb_cookie.duration_seconds
+          Value: 30
+        - Key: deregistration_delay.timeout_seconds
+          Value: 240
 
 Outputs:
   URL:
