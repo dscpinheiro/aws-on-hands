@@ -20,6 +20,24 @@ Resources:
       ReceiveMessageWaitTimeSeconds: 20
       VisibilityTimeout: 300
 
+  MyQueuePolicy:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      Queues: [!Ref MyQueue1, !Ref MyQueue2]
+      PolicyDocument:
+        Id: MyQueuePolicy
+        Statement:
+          - Sid: Allow-SendMessage-To-Both-Queues-From-SNS-Topic
+            Effect: "Allow"
+            Principal:
+              AWS: "*"
+            Action:
+              - "sqs:SendMessage"
+            Resource: "*"
+            Condition:
+              ArnEquals:
+                "aws:SourceArn": !Ref MySnsTopic
+
   MySnsTopic:
     Type: AWS::SNS::Topic
     Properties:
