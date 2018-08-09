@@ -3,9 +3,9 @@
 
 Parameters:
   IdSubnet1:
-    Type: String
+    Type: AWS::EC2::Subnet::Id
   IdSubnet2:
-    Type: String
+    Type: AWS::EC2::Subnet::Id
 
 Resources:
   MyESDomain:
