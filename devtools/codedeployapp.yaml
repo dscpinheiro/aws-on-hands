@@ -1,0 +1,40 @@
+Parameters:
+  ApplicationName:
+    Type: String
+    MaxLength: 50
+  ComputePlatform:
+    Type: String
+    Default: Server
+    AllowedValues:
+      - Server
+      - Lambda
+  MinHealthyHostsType:
+    Type: String
+    Default: FLEET_PERCENT
+    AllowedValues:
+      - FLEET_PERCENT
+      - HOST_COUNT
+  MinHealthyHostsValue:
+    Type: Number
+    Default: 50
+    MinValue: 1
+
+Resources:
+  MyApplication:
+    Type: AWS::CodeDeploy::Application
+    Properties:
+      ApplicationName: !Ref ApplicationName
+      ComputePlatform: !Ref ComputePlatform
+
+  MyDeploymentConfig: 
+    Type: AWS::CodeDeploy::DeploymentConfig
+    Properties:
+      DeploymentConfigName: !Join ["-", [!Ref ApplicationName, "DeploymentConfig"]]
+      MinimumHealthyHosts: 
+        Type: !Ref MinHealthyHostsType
+        Value: !Ref MinHealthyHostsValue
+
+Outputs:
+  ApplicationArn:
+    Description: A reference to the CodeDeploy application
+    Value: !Ref MyApplication
