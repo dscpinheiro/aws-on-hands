@@ -46,7 +46,6 @@ Resources:
       Subscription: 
         - Endpoint: !GetAtt MyQueue1.Arn
           Protocol: sqs
-          RawMessageDelivery: true
         - Endpoint: !GetAtt MyQueue2.Arn
           Protocol: sqs
         - Endpoint: !Ref Email
