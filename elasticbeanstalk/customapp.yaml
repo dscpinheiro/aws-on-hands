@@ -1,0 +1,28 @@
+Resources:
+  MyApplication:
+    Type: AWS::ElasticBeanstalk::Application
+    Properties:
+      ApplicationName: MyApplication
+      ResourceLifecycleConfig:
+        ServiceRole: !Join ["", ["arn:aws:iam::", !Ref "AWS::AccountId", ":role/aws-elasticbeanstalk-service-role"]]
+        VersionLifecycleConfig:
+          MaxAgeRule:
+            DeleteSourceFromS3: true
+            Enabled: true
+            MaxAgeInDays: 60
+          MaxCountRule:
+            DeleteSourceFromS3: true
+            Enabled: true
+            MaxCount: 10
+
+  MyEnvironment:
+    Type: AWS::ElasticBeanstalk::Environment
+    Properties:
+      ApplicationName: !Ref MyApplication
+      EnvironmentName: MyEnvironment
+      OptionSettings:
+      SolutionStackName: 64bit Amazon Linux 2018.03 v2.12.2 running Docker 18.03.1-ce
+      Tier:
+        Name: WebServer
+        Type: Standard
+      VersionLabel: My default environment
