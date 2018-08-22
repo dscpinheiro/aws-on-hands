@@ -20,6 +20,16 @@ Parameters:
     AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
     ConstraintDescription: must be a valid IP CIDR range of the form x.x.x.x/x
 
+Mappings: 
+  # https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html#access-logging-bucket-permissions
+  ELBAccountIdMap: 
+    us-east-1:
+      Id: 127311923021
+    eu-west-1:
+      Id: 156460612806
+    us-west-2: 
+      Id: 797873946194
+
 Resources:
   MyApplication:
     Type: AWS::ElasticBeanstalk::Application
@@ -36,6 +46,18 @@ Resources:
   AccessLogS3Bucket:
     Type: AWS::S3::Bucket
     DeletionPolicy: Retain
+  AccessLogS3BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: [!FindInMap [ELBAccountIdMap, !Ref "AWS::Region", Id]]
+            Action: s3:PutObject
+            Resource: !Join ["", ["arn:aws:s3:::", !Ref AccessLogS3Bucket, "/*"]]
+      Bucket: !Ref AccessLogS3Bucket
 
   MyEnvironment:
     Type: AWS::ElasticBeanstalk::Environment
