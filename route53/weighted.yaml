@@ -18,7 +18,7 @@ Resources:
     Type: AWS::EC2::Instance
     Properties:
       ImageId: ami-6cd6f714
-      InstanceType: t2.micro
+      InstanceType: t3.micro
       SecurityGroupIds:
         - !Ref SecurityGroup
       Tags:
@@ -35,7 +35,7 @@ Resources:
     Type: AWS::EC2::Instance
     Properties:
       ImageId: ami-6cd6f714
-      InstanceType: t2.micro
+      InstanceType: t3.micro
       SecurityGroupIds:
         - !Ref SecurityGroup
       Tags:

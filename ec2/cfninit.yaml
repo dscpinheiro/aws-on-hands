@@ -1,11 +1,11 @@
 Parameters:
   InstanceType:
     Type: String
-    Default: t2.micro
+    Default: t3.micro
     AllowedValues:
-      - t2.nano
-      - t2.micro
-      - t2.large
+      - t3.nano
+      - t3.micro
+      - t3.large
   AmiId:
     Description: AMI id to use for this instance
     Type: AWS::EC2::Image::Id
