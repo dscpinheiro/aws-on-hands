@@ -114,6 +114,9 @@ Resources:
         - Namespace: "aws:elasticbeanstalk:healthreporting:system"
           OptionName: SystemType
           Value: enhanced
+        - Namespace: "aws:elasticbeanstalk:hostmanager"
+          OptionName: LogPublicationControl
+          Value: true
         - Namespace: "aws:elasticbeanstalk:managedactions"
           OptionName: ManagedActionsEnabled
           Value: true
