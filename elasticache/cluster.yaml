@@ -1,0 +1,40 @@
+Parameters:
+  DefaultSecurityGroupId:
+    Description: Id of the default security group, which will be allowed to access the clusters
+    Type: AWS::EC2::SecurityGroup::Id
+  Subnets:
+    Type: List<AWS::EC2::Subnet::Id>
+
+Resources:
+  MySubnetGroup: 
+    Type: AWS::ElastiCache::SubnetGroup
+    Properties: 
+      CacheSubnetGroupName: MySubnetGroup
+      Description: Redis Subnet Group
+      SubnetIds: !Ref Subnets
+
+  MyParameterGroup:
+    Type: AWS::ElastiCache::ParameterGroup
+    Properties:
+      CacheParameterGroupFamily: redis4.0
+      Description: Custom parameter group for Redis
+
+  MyCluster:
+    Type: AWS::ElastiCache::CacheCluster
+    Properties:
+      AutoMinorVersionUpgrade: true
+      CacheNodeType: cache.t2.micro
+      CacheParameterGroupName: !Ref MyParameterGroup
+      CacheSubnetGroupName: !Ref MySubnetGroup
+      ClusterName: MyCluster
+      Engine: redis
+      EngineVersion: 4.0.10
+      NumCacheNodes: 1
+      VpcSecurityGroupIds:
+        - !Ref DefaultSecurityGroupId
+
+Outputs:
+  URL:
+    Value: !GetAtt MyCluster.RedisEndpoint.Address
+  Port:
+    Value: !GetAtt MyCluster.RedisEndpoint.Port
