@@ -26,7 +26,7 @@ Resources:
     Properties:
       Family: products-api
       ContainerDefinitions:
-        - Name: products-api
+        - Name: products-api-container
           Essential: true
           Image: !Ref ImageUrl
           Memory: 128
