@@ -1,0 +1,33 @@
+Parameters:
+  MountTargetSubnet1:
+    Type: AWS::EC2::Subnet::Id
+  MountTargetSubnet2:
+    Type: AWS::EC2::Subnet::Id
+  DefaultSecurityGroupId:
+    Type: AWS::EC2::SecurityGroup::Id
+
+Resources:
+  MyFileSystem:
+    Type: AWS::EFS::FileSystem
+    Properties: 
+      Encrypted: true
+      PerformanceMode: generalPurpose
+      ThroughputMode: bursting
+      FileSystemTags:
+        - Key: owner
+          Value: admin
+        - Key: environment
+          Value: prod
+
+  MyMountTarget1: 
+    Type: AWS::EFS::MountTarget
+    Properties: 
+      FileSystemId: !Ref MyFileSystem
+      SubnetId: !Ref MountTargetSubnet1
+      SecurityGroups: [!Ref DefaultSecurityGroupId]
+  MyMountTarget2: 
+    Type: AWS::EFS::MountTarget
+    Properties: 
+      FileSystemId: !Ref MyFileSystem
+      SubnetId: !Ref MountTargetSubnet2
+      SecurityGroups: [!Ref DefaultSecurityGroupId]
