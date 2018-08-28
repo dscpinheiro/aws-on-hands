@@ -1,12 +1,42 @@
 Parameters:
-  MountTargetSubnet1:
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+  SubnetId:
     Type: AWS::EC2::Subnet::Id
-  MountTargetSubnet2:
-    Type: AWS::EC2::Subnet::Id
-  DefaultSecurityGroupId:
-    Type: AWS::EC2::SecurityGroup::Id
+  KeyPair:
+    Type: AWS::EC2::KeyPair::KeyName
+  SSHLocation:
+    Type: String
+    MinLength: 9
+    MaxLength: 18
+    Default: "0.0.0.0/0"
+    AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})"
+    ConstraintDescription: must be a valid IP CIDR range of the form x.x.x.x/x
 
 Resources:
+  EC2SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId: !Ref VpcId
+      GroupName: SG for EC2 instance
+      GroupDescription: Enable access via SSH
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: !Ref SSHLocation
+  MountTargetSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: SG for EFS mount target
+      GroupDescription: Enable access via NFS
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 2049
+        ToPort: 2049
+        SourceSecurityGroupId: !Ref EC2SecurityGroup
+
   MyFileSystem:
     Type: AWS::EFS::FileSystem
     Properties: 
@@ -18,16 +48,28 @@ Resources:
           Value: admin
         - Key: environment
           Value: prod
-
   MyMountTarget1: 
     Type: AWS::EFS::MountTarget
-    Properties: 
+    Properties:
       FileSystemId: !Ref MyFileSystem
-      SubnetId: !Ref MountTargetSubnet1
-      SecurityGroups: [!Ref DefaultSecurityGroupId]
-  MyMountTarget2: 
-    Type: AWS::EFS::MountTarget
-    Properties: 
-      FileSystemId: !Ref MyFileSystem
-      SubnetId: !Ref MountTargetSubnet2
-      SecurityGroups: [!Ref DefaultSecurityGroupId]
+      SubnetId: !Ref SubnetId
+      SecurityGroups: [!Ref MountTargetSecurityGroup]
+
+  Ec2Instance:
+    Type: AWS::EC2::Instance
+    DependsOn: MyMountTarget1
+    Properties:
+      ImageId: ami-6cd6f714
+      KeyName: !Ref KeyPair
+      InstanceType: t3.micro
+      SubnetId: !Ref SubnetId
+      SecurityGroupIds: [!Ref EC2SecurityGroup]
+      UserData: 
+        Fn::Base64: !Sub |
+          #!/bin/bash -xe
+          MOUNT_TARGET_DNS=${MyFileSystem}.efs.${AWS::Region}.amazonaws.com
+          mkdir /home/efs-mount-point
+          mount -t nfs -o nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport $MOUNT_TARGET_DNS:/ /home/efs-mount-point
+          cd /home/efs-mount-point
+          chmod go+rw .
+          touch test-file.txt
