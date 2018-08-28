@@ -1,0 +1,19 @@
+Parameters:
+  EncryptionKey:
+    Type: String
+    Default: alias/aws/kinesis
+
+Resources:
+  MyStream:
+    Type: AWS::Kinesis::Stream
+    Properties:
+      Name: my-data-stream
+      RetentionPeriodHours: 36
+      ShardCount: 1
+      StreamEncryption:
+        EncryptionType: KMS
+        KeyId: !Ref EncryptionKey
+
+Outputs:
+  InstanceId:
+    Value: !GetAtt MyStream.Arn
