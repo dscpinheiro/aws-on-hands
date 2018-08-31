@@ -1,0 +1,112 @@
+Parameters:
+  EncryptionKey:
+    Type: String
+    Default: alias/aws/kinesis
+
+Resources:
+  MyDataStream:
+    Type: AWS::Kinesis::Stream
+    Properties:
+      Name: my-data-stream
+      RetentionPeriodHours: 36
+      ShardCount: 1
+      StreamEncryption:
+        EncryptionType: KMS
+        KeyId: !Ref EncryptionKey
+
+  MyDeliveryS3Bucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      VersioningConfiguration:
+        Status: Enabled
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+
+  MyDeliveryRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: firehose.amazonaws.com
+            Action: "sts:AssumeRole"
+            Condition:
+              StringEquals:
+                "sts:ExternalId": !Ref "AWS::AccountId"
+      Policies:
+        - PolicyName: firehose_delivery_policy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "s3:AbortMultipartUpload"
+                  - "s3:GetBucketLocation"
+                  - "s3:GetObject"
+                  - "s3:ListBucket"
+                  - "s3:ListBucketMultipartUploads"
+                  - "s3:PutObject"
+                Resource:
+                  - !GetAtt MyDeliveryS3Bucket.Arn
+                  - !Join ["", [!GetAtt MyDeliveryS3Bucket.Arn, "/*"]]
+              - Effect: Allow
+                Action:
+                  - "kinesis:DescribeStream"
+                  - "kinesis:GetShardIterator"
+                  - "kinesis:GetRecords"
+                Resource:
+                  - !GetAtt MyDataStream.Arn
+              - Effect: Allow
+                Action:
+                  - "logs:PutLogEvents"
+                Resource:
+                  - !Join ["", ["arn:aws:logs:", !Ref "AWS::Region", ":", !Ref "AWS::AccountId", ":log-group:delivery-log-group"]]
+                  - !Join ["", ["arn:aws:logs:", !Ref "AWS::Region", ":", !Ref "AWS::AccountId", ":log-group:delivery-log-group:log-stream:s3-delivery"]]
+
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties: 
+      LogGroupName: delivery-log-group
+      RetentionInDays: 7
+  LogStream: 
+    Type: AWS::Logs::LogStream
+    DependsOn: LogGroup
+    Properties: 
+      LogGroupName: delivery-log-group
+      LogStreamName: s3-delivery
+
+  MyDeliveryStream:
+    Type: AWS::KinesisFirehose::DeliveryStream
+    DependsOn:
+      - MyDeliveryRole
+      - LogGroup
+      - LogStream
+    Properties:
+      DeliveryStreamName: my-delivery-stream
+      DeliveryStreamType: KinesisStreamAsSource
+      ExtendedS3DestinationConfiguration:
+        BucketARN: !GetAtt MyDeliveryS3Bucket.Arn
+        BufferingHints:
+          IntervalInSeconds: 60
+          SizeInMBs: 5
+        CloudWatchLoggingOptions:
+          Enabled: true
+          LogGroupName: delivery-log-group
+          LogStreamName: s3-delivery
+        CompressionFormat: GZIP
+        Prefix: firehose/
+        RoleARN: !GetAtt MyDeliveryRole.Arn
+      KinesisStreamSourceConfiguration:
+        KinesisStreamARN: !GetAtt MyDataStream.Arn
+        RoleARN: !GetAtt MyDeliveryRole.Arn
+
+Outputs:
+  DataStreamArn:
+    Value: !GetAtt MyDataStream.Arn
+  DeliveryStreamArn:
+    Value: !GetAtt MyDeliveryStream.Arn
