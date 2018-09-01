@@ -34,7 +34,7 @@ All CloudFormation templates were created in the Oregon (us-west-2) region.
     - [x] Explore and implement a Continuous Delivery pipeline
     - [x] Develop a CI/CD pipeline to automatically update a dev deployment of your infrastructure when new code is published, and then build a workflow to update the production version if approved
 9. Misc
-    - [ ] Kinesis
+    - [x] Kinesis
     - [ ] EMR / Glue
     - [ ] Spot instances / fleets
     - [ ] KMS
