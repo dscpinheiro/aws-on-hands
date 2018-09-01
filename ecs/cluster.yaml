@@ -1,9 +1,8 @@
-Description: This template deploys an ECS cluster to the provided VPC and subnets using an Auto Scaling Group
-
 Parameters:
   EnvironmentName:
     Description: An environment name that will be prefixed to resource names
     Type: String
+    Default: staging
   InstanceType:
     Description: Which instance type should we use to build the ECS cluster?
     Type: String
@@ -231,7 +230,7 @@ Resources:
             "Action": "sts:AssumeRole",
             "Effect": "Allow",
             "Principal": {
-                "Service": "ec2.amazonaws.com"
+              "Service": "ec2.amazonaws.com"
             }
           }]
         }
@@ -305,9 +304,9 @@ Resources:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
-        Version: '2012-10-17'
+        Version: "2012-10-17"
         Statement:
-          Action: ['sts:AssumeRole']
+          Action: ["sts:AssumeRole"]
           Effect: Allow
           Principal:
             Service: [application-autoscaling.amazonaws.com]
