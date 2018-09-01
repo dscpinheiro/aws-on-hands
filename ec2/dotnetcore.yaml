@@ -50,7 +50,7 @@ Resources:
           Value: !Sub "CF-${AWS::StackName}"
       UserData: 
         Fn::Base64: |
-          #!/bin/bash
+          #!/bin/bash -xe
           yum update -y
           wget https://download.microsoft.com/download/1/f/7/1f7755c5-934d-4638-b89f-1f4ffa5afe89/aspnetcore-runtime-2.1.2-linux-x64.tar.gz
           mkdir -p $HOME/dotnet && tar zxf aspnetcore-runtime-2.1.2-linux-x64.tar.gz -C $HOME/dotnet

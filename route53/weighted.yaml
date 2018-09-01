@@ -26,7 +26,7 @@ Resources:
           Value: CF-WebServer1-R53
       UserData: 
         Fn::Base64: |
-          #!/bin/bash
+          #!/bin/bash -xe
           yum -y install httpd
           service httpd start
           chkconfig httpd on
@@ -43,7 +43,7 @@ Resources:
           Value: CF-WebServer2-R53
       UserData: 
         Fn::Base64: |
-          #!/bin/bash
+          #!/bin/bash -xe
           yum -y install httpd
           service httpd start
           chkconfig httpd on

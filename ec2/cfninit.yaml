@@ -88,7 +88,7 @@ Resources:
         - !Ref SecurityGroup
       UserData: 
         Fn::Base64: !Sub |
-          #!/bin/bash
+          #!/bin/bash -xe
           yum install -y aws-cfn-bootstrap
           /opt/aws/bin/cfn-init --verbose --stack ${AWS::StackName} --resource Ec2Instance --region ${AWS::Region}
           /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource Ec2Instance --region ${AWS::Region}
