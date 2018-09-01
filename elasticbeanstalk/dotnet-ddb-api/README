@@ -1,3 +1,0 @@
-Source: https://aws.amazon.com/blogs/developer/net-core-2-1-and-aws/
-
-dotnet eb deploy-environment --publish-options "--runtime win-x64"
