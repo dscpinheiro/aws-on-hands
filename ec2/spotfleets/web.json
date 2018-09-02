@@ -1,0 +1,163 @@
+{
+  "IamFleetRole": "arn:aws:iam::123456789012:role/aws-ec2-spot-fleet-tagging-role",
+  "AllocationStrategy": "diversified",
+  "TargetCapacity": 5,
+  "SpotPrice": "0.333",
+  "ValidFrom": "2018-09-02T01:10:06Z",
+  "ValidUntil": "2019-09-02T01:10:06Z",
+  "TerminateInstancesWithExpiration": true,
+  "LaunchSpecifications": [
+    {
+      "ImageId": "ami-97785bed",
+      "InstanceType": "t2.xlarge",
+      "SubnetId": "subnet-12345678901234567, subnet-76543210987654321",
+      "SpotPrice": "0.1856",
+      "Monitoring": {
+        "Enabled": true
+      },
+      "BlockDeviceMappings": [
+        {
+          "DeviceName": "/dev/xvda",
+          "Ebs": {
+            "DeleteOnTermination": true,
+            "VolumeType": "gp2",
+            "VolumeSize": 8,
+            "SnapshotId": "snap-0fae6f7252388fc12"
+          }
+        }
+      ],
+      "SecurityGroups": [
+        {
+          "GroupId": "sg-abcdefghijlmopqrstu"
+        }
+      ]
+    },
+    {
+      "ImageId": "ami-97785bed",
+      "InstanceType": "c3.xlarge",
+      "SubnetId": "subnet-12345678901234567, subnet-76543210987654321",
+      "SpotPrice": "0.21",
+      "Monitoring": {
+        "Enabled": true
+      },
+      "BlockDeviceMappings": [
+        {
+          "DeviceName": "/dev/xvda",
+          "Ebs": {
+            "DeleteOnTermination": true,
+            "VolumeType": "gp2",
+            "VolumeSize": 8,
+            "SnapshotId": "snap-0fae6f7252388fc12"
+          }
+        }
+      ],
+      "SecurityGroups": [
+        {
+          "GroupId": "sg-abcdefghijlmopqrstu"
+        }
+      ]
+    },
+    {
+      "ImageId": "ami-97785bed",
+      "InstanceType": "c4.xlarge",
+      "SubnetId": "subnet-12345678901234567, subnet-76543210987654321",
+      "SpotPrice": "0.199",
+      "Monitoring": {
+        "Enabled": true
+      },
+      "BlockDeviceMappings": [
+        {
+          "DeviceName": "/dev/xvda",
+          "Ebs": {
+            "DeleteOnTermination": true,
+            "VolumeType": "gp2",
+            "VolumeSize": 8,
+            "SnapshotId": "snap-0fae6f7252388fc12"
+          }
+        }
+      ],
+      "SecurityGroups": [
+        {
+          "GroupId": "sg-abcdefghijlmopqrstu"
+        }
+      ]
+    },
+    {
+      "ImageId": "ami-97785bed",
+      "InstanceType": "m3.xlarge",
+      "SubnetId": "subnet-12345678901234567, subnet-76543210987654321",
+      "SpotPrice": "0.266",
+      "Monitoring": {
+        "Enabled": true
+      },
+      "BlockDeviceMappings": [
+        {
+          "DeviceName": "/dev/xvda",
+          "Ebs": {
+            "DeleteOnTermination": true,
+            "VolumeType": "gp2",
+            "VolumeSize": 8,
+            "SnapshotId": "snap-0fae6f7252388fc12"
+          }
+        }
+      ],
+      "SecurityGroups": [
+        {
+          "GroupId": "sg-abcdefghijlmopqrstu"
+        }
+      ]
+    },
+    {
+      "ImageId": "ami-97785bed",
+      "InstanceType": "m4.xlarge",
+      "SubnetId": "subnet-12345678901234567, subnet-76543210987654321",
+      "SpotPrice": "0.2",
+      "Monitoring": {
+        "Enabled": true
+      },
+      "BlockDeviceMappings": [
+        {
+          "DeviceName": "/dev/xvda",
+          "Ebs": {
+            "DeleteOnTermination": true,
+            "VolumeType": "gp2",
+            "VolumeSize": 8,
+            "SnapshotId": "snap-0fae6f7252388fc12"
+          }
+        }
+      ],
+      "SecurityGroups": [
+        {
+          "GroupId": "sg-abcdefghijlmopqrstu"
+        }
+      ]
+    },
+    {
+      "ImageId": "ami-97785bed",
+      "InstanceType": "r3.xlarge",
+      "SubnetId": "subnet-12345678901234567, subnet-76543210987654321",
+      "SpotPrice": "0.333",
+      "Monitoring": {
+        "Enabled": true
+      },
+      "BlockDeviceMappings": [
+        {
+          "DeviceName": "/dev/xvda",
+          "Ebs": {
+            "DeleteOnTermination": true,
+            "VolumeType": "gp2",
+            "VolumeSize": 8,
+            "SnapshotId": "snap-0fae6f7252388fc12"
+          }
+        }
+      ],
+      "SecurityGroups": [
+        {
+          "GroupId": "sg-abcdefghijlmopqrstu"
+        }
+      ]
+    }
+  ],
+  "Type": "maintain",
+  "ReplaceUnhealthyInstances": true
+}
