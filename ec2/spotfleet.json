@@ -1,0 +1,124 @@
+{
+    "IamFleetRole": "arn:aws:iam::123456789012:role/aws-ec2-spot-fleet-tagging-role",
+    "AllocationStrategy": "diversified",
+    "TargetCapacity": 2,
+    "SpotPrice": "0.105",
+    "ValidFrom": "2018-09-02T00:18:22Z",
+    "ValidUntil": "2019-09-02T00:18:22Z",
+    "TerminateInstancesWithExpiration": true,
+    "LaunchSpecifications": [
+      {
+        "ImageId": "ami-97785bed",
+        "InstanceType": "c4.large",
+        "SubnetId": "subnet-12345678901234567, subnet-76543210987654321",
+        "SpotPrice": "0.1",
+        "BlockDeviceMappings": [
+          {
+            "DeviceName": "/dev/xvda",
+            "Ebs": {
+              "DeleteOnTermination": true,
+              "VolumeType": "gp2",
+              "VolumeSize": 8,
+              "SnapshotId": "snap-0fae6f7252388fc12"
+            }
+          }
+        ],
+        "SecurityGroups": [
+          {
+            "GroupId": "sg-abcdefghijlmopqrstu"
+          }
+        ],
+        "UserData": "IyEvYmluL2Jhc2gKeXVtIC15IHVwZGF0ZQp5dW0gLXkgaW5zdGFsbCBodHRwZApjaGtjb25maWcgaHR0cGQgb24KaW5zdGFuY2VpZD0kKGN1cmwgaHR0cDovLzE2OS4yNTQuMTY5LjI1NC9sYXRlc3QvbWV0YS1kYXRhL2luc3RhbmNlLWlkKQplY2hvICJoZWxsbyBmcm9tICRpbnN0YW5jZWlkIiA+IC92YXIvd3d3L2h0bWwvaW5kZXguaHRtbApzZXJ2aWNlIGh0dHBkIHN0YXJ0",
+        "TagSpecifications": [
+          {
+            "ResourceType": "instance",
+            "Tags": [
+              {
+                "Key": "loadBalancerTargetGroup",
+                "Value": "arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/my-target-group/b604559d3fb1d720"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "ImageId": "ami-97785bed",
+        "InstanceType": "m4.large",
+        "SubnetId": "subnet-12345678901234567, subnet-76543210987654321",
+        "SpotPrice": "0.1",
+        "BlockDeviceMappings": [
+          {
+            "DeviceName": "/dev/xvda",
+            "Ebs": {
+              "DeleteOnTermination": true,
+              "VolumeType": "gp2",
+              "VolumeSize": 8,
+              "SnapshotId": "snap-0fae6f7252388fc12"
+            }
+          }
+        ],
+        "SecurityGroups": [
+          {
+            "GroupId": "sg-abcdefghijlmopqrstu"
+          }
+        ],
+        "UserData": "IyEvYmluL2Jhc2gKeXVtIC15IHVwZGF0ZQp5dW0gLXkgaW5zdGFsbCBodHRwZApjaGtjb25maWcgaHR0cGQgb24KaW5zdGFuY2VpZD0kKGN1cmwgaHR0cDovLzE2OS4yNTQuMTY5LjI1NC9sYXRlc3QvbWV0YS1kYXRhL2luc3RhbmNlLWlkKQplY2hvICJoZWxsbyBmcm9tICRpbnN0YW5jZWlkIiA+IC92YXIvd3d3L2h0bWwvaW5kZXguaHRtbApzZXJ2aWNlIGh0dHBkIHN0YXJ0",
+        "TagSpecifications": [
+          {
+            "ResourceType": "instance",
+            "Tags": [
+              {
+                "Key": "loadBalancerTargetGroup",
+                "Value": "arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/my-target-group/b604559d3fb1d720"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "ImageId": "ami-97785bed",
+        "InstanceType": "m5.large",
+        "SubnetId": "subnet-12345678901234567, subnet-76543210987654321",
+        "SpotPrice": "0.096",
+        "BlockDeviceMappings": [
+          {
+            "DeviceName": "/dev/xvda",
+            "Ebs": {
+              "DeleteOnTermination": true,
+              "VolumeType": "gp2",
+              "VolumeSize": 8,
+              "SnapshotId": "snap-0fae6f7252388fc12"
+            }
+          }
+        ],
+        "SecurityGroups": [
+          {
+            "GroupId": "sg-abcdefghijlmopqrstu"
+          }
+        ],
+        "UserData": "IyEvYmluL2Jhc2gKeXVtIC15IHVwZGF0ZQp5dW0gLXkgaW5zdGFsbCBodHRwZApjaGtjb25maWcgaHR0cGQgb24KaW5zdGFuY2VpZD0kKGN1cmwgaHR0cDovLzE2OS4yNTQuMTY5LjI1NC9sYXRlc3QvbWV0YS1kYXRhL2luc3RhbmNlLWlkKQplY2hvICJoZWxsbyBmcm9tICRpbnN0YW5jZWlkIiA+IC92YXIvd3d3L2h0bWwvaW5kZXguaHRtbApzZXJ2aWNlIGh0dHBkIHN0YXJ0",
+        "TagSpecifications": [
+          {
+            "ResourceType": "instance",
+            "Tags": [
+              {
+                "Key": "loadBalancerTargetGroup",
+                "Value": "arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/my-target-group/b604559d3fb1d720"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "Type": "maintain",
+    "ReplaceUnhealthyInstances": true,
+    "LoadBalancersConfig": {
+      "TargetGroupsConfig": {
+        "TargetGroups": [
+          {
+            "Arn": "arn:aws:elasticloadbalancing:us-east-1:123456789012:targetgroup/my-target-group/b604559d3fb1d720"
+          }
+        ]
+      }
+    }
+  }

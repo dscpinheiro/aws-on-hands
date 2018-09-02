@@ -36,7 +36,7 @@ All CloudFormation templates were created in the Oregon (us-west-2) region.
 9. Misc
     - [x] Kinesis
     - [ ] EMR / Glue
-    - [ ] Spot instances / fleets
+    - [x] Spot instances / fleets => https://github.com/awslabs/ec2-spot-labs/blob/master/workshops/ec2-spot-fleet-web-app/README.md
     - [ ] KMS
     - [x] SNS / SQS
     - [ ] More complex IAM policies
