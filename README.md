@@ -35,6 +35,7 @@ All CloudFormation templates were created in the Oregon (us-west-2) region.
     - [x] Develop a CI/CD pipeline to automatically update a dev deployment of your infrastructure when new code is published, and then build a workflow to update the production version if approved
 9. Misc
     - [x] Kinesis
+    - [x] EMR / Glue
     - [x] Spot instances / fleets => https://github.com/awslabs/ec2-spot-labs/blob/master/workshops/ec2-spot-fleet-web-app/README.md
     - [ ] KMS
     - [x] SNS / SQS

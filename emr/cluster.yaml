@@ -1,0 +1,37 @@
+Parameters:
+  KeyPair:
+    Description: Key pair to connect to the instances in this cluster
+    Type: AWS::EC2::KeyPair::KeyName
+
+Resources:
+  MyLoggingS3Bucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+
+  MyCluster: 
+    Type: AWS::EMR::Cluster
+    Properties:
+      Applications:
+        - Name: Spark
+      EbsRootVolumeSize: 20
+      LogUri: !Join ["", ["s3://", !Ref MyLoggingS3Bucket, "elasticmapreduce/"]]
+      Instances: 
+        Ec2KeyName: !Ref KeyPair
+        MasterInstanceGroup: 
+          InstanceCount: 1
+          InstanceType: m3.xlarge
+          Market: ON_DEMAND
+          Name: Master
+        CoreInstanceGroup: 
+          InstanceCount: 2
+          InstanceType: m3.xlarge
+          Market: ON_DEMAND
+          Name: Core
+      Name: MyCluster
+      JobFlowRole: EMR_EC2_DefaultRole
+      ServiceRole: EMR_DefaultRole
+      ReleaseLabel: emr-5.16.0
+
+Outputs:
+  ClusterDNS:
+    Value: !GetAtt MyCluster.MasterPublicDNS
