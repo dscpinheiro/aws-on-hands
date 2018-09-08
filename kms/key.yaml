@@ -1,0 +1,26 @@
+Resources:
+  MyKey:
+    Type: AWS::KMS::Key
+    Properties:
+      KeyPolicy:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              AWS: !Join ["", ["arn:aws:iam::", !Ref "AWS::AccountId", ":root"]]
+            Action: "kms:*"
+            Resource: "*"
+      Tags:
+        - Key: owner
+          Value: admin
+  MyAlias:
+    Type: AWS::KMS::Alias
+    Properties:
+      AliasName: alias/my-key-alias
+      TargetKeyId: !Ref MyKey
+
+Outputs:
+  KeyArn:
+    Value: !GetAtt MyKey.Arn
+  KeyAlias:
+    Value: !Ref MyAlias
