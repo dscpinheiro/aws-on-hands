@@ -42,4 +42,4 @@ All CloudFormation templates were created in the Oregon (us-west-2) region.
     - [ ] More complex IAM policies
     - [ ] Networking (creating VPC from scratch)
     - [ ] troposphere (https://github.com/cloudtools/troposphere)
-    - [x] Terraform => https://www.terraform.io/intro/getting-started/build.html
+    - [x] Terraform => https://www.terraform.io/intro/getting-started/build.html / https://github.com/terraform-providers/terraform-provider-aws/tree/master/examples
