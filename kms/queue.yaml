@@ -1,0 +1,17 @@
+Parameters:
+  KmsKeyId:
+    Description: Master key that will be used to encrypt the queue
+    Type: String
+
+Resources:
+  MyQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: my-encrypted-queue
+      KmsMasterKeyId: !Ref KmsKeyId
+      KmsDataKeyReusePeriodSeconds: 600
+      ReceiveMessageWaitTimeSeconds: 20
+
+Outputs:
+  QueueURL:
+    Value: !Ref MyQueue
