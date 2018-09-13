@@ -2,7 +2,7 @@ Resources:
   MyVpc:
     Type: AWS::EC2::VPC
     Properties:
-      CidrBlock: "10.0.200.0/16"
+      CidrBlock: "10.200.0.0/16"
 
       # Amazon DNS server resolves DNS hostnames for instances to their corresponding IP addresses
       EnableDnsSupport: true
@@ -13,8 +13,26 @@ Resources:
       InstanceTenancy: default
       Tags:
         - Key: Name
-          Value: CloudFormationVPC
+          Value: cloudformation-vpc
+
+  SecondaryIpv4CidrBlock:
+    Type: AWS::EC2::VPCCidrBlock
+    Properties:
+      VpcId: !Ref MyVpc
+      CidrBlock: "10.210.0.0/16"
+
+  Ipv6CidrBlock:
+    Type: AWS::EC2::VPCCidrBlock
+    Properties:
+      VpcId: !Ref MyVpc
+      AmazonProvidedIpv6CidrBlock: true
 
 Outputs:
   VpcId:
     Value: !Ref MyVpc
+  PrimaryCidrBlock:
+    Value: !GetAtt MyVpc.CidrBlock
+  SecondaryCidrBlock:
+    Value: !Select [0, !GetAtt MyVpc.CidrBlockAssociations]
+  Ipv6CidrBlock:
+    Value: !Select [0, !GetAtt MyVpc.Ipv6CidrBlocks]
