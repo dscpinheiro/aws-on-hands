@@ -13,7 +13,7 @@ Resources:
       InstanceTenancy: default
       Tags:
         - Key: Name
-          Value: cloud-formation-vpc
+          Value: cloudformation-vpc
 
   SecondaryIpv4CidrBlock:
     Type: AWS::EC2::VPCCidrBlock
@@ -31,7 +31,7 @@ Resources:
     Properties:
       Tags:
         - Key: Name
-          Value: cloud-formation-igw
+          Value: cloudformation-igw
   AttachGateway:
     Type: AWS::EC2::VPCGatewayAttachment
     Properties:
