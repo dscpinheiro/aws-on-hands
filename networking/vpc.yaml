@@ -13,19 +13,30 @@ Resources:
       InstanceTenancy: default
       Tags:
         - Key: Name
-          Value: cloudformation-vpc
+          Value: cloud-formation-vpc
 
   SecondaryIpv4CidrBlock:
     Type: AWS::EC2::VPCCidrBlock
     Properties:
       VpcId: !Ref MyVpc
       CidrBlock: "10.210.0.0/16"
-
   Ipv6CidrBlock:
     Type: AWS::EC2::VPCCidrBlock
     Properties:
       VpcId: !Ref MyVpc
       AmazonProvidedIpv6CidrBlock: true
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags:
+        - Key: Name
+          Value: cloud-formation-igw
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref MyVpc
+      InternetGatewayId: !Ref InternetGateway
 
 Outputs:
   VpcId:
