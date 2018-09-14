@@ -95,6 +95,21 @@ Resources:
       SubnetId: !Ref PublicSubnet2
       RouteTableId: !Ref PublicRouteTable
 
+  S3Endpoint:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      VpcId: !Ref MyVpc
+      RouteTableIds: [!Ref PublicRouteTable]
+      ServiceName: !Join [".", ["com.amazonaws", !Ref "AWS::Region", "s3"]]
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal: "*"
+            Action:
+              - "s3:*"
+            Resource: "*"
+
 Outputs:
   VpcId:
     Value: !Ref MyVpc
