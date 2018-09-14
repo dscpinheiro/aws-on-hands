@@ -3,13 +3,8 @@ Resources:
     Type: AWS::EC2::VPC
     Properties:
       CidrBlock: "10.200.0.0/16"
-
-      # Amazon DNS server resolves DNS hostnames for instances to their corresponding IP addresses
-      EnableDnsSupport: true
-
-      # Instances in the VPC get DNS hostnames
-      EnableDnsHostnames: true
-
+      EnableDnsSupport: true # Amazon DNS server resolves DNS hostnames for instances to their corresponding IP addresses
+      EnableDnsHostnames: true # Instances in the VPC get DNS hostnames
       InstanceTenancy: default
       Tags:
         - Key: Name
@@ -44,6 +39,13 @@ Resources:
       Tags:
         - Key: Name
           Value: cloudformation-public-rt
+  PrivateRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref MyVpc
+      Tags:
+        - Key: Name
+          Value: cloudformation-private-rt
   PublicRouteIpv4:
     Type: AWS::EC2::Route
     DependsOn: InternetGateway
@@ -83,23 +85,55 @@ Resources:
       Tags:
         - Key: Name
           Value: cloudformation-public-subnet2
+  PrivateSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MyVpc
+      AvailabilityZone: !Select 
+        - 0
+        - Fn::GetAZs: !Ref "AWS::Region"
+      CidrBlock: "10.200.16.0/20"
+      Tags:
+        - Key: Name
+          Value: cloudformation-private-subnet1
+  PrivateSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MyVpc
+      AvailabilityZone: !Select 
+        - 1
+        - Fn::GetAZs: !Ref "AWS::Region"
+      CidrBlock: "10.200.32.0/20"
+      Tags:
+        - Key: Name
+          Value: cloudformation-private-subnet2
 
-  Subnet1RouteTableAssociation:
+  PublicSubnet1RouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       SubnetId: !Ref PublicSubnet1
       RouteTableId: !Ref PublicRouteTable
-  Subnet2RouteTableAssociation:
+  PublicSubnet2RouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       SubnetId: !Ref PublicSubnet2
       RouteTableId: !Ref PublicRouteTable
+  PrivateSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PrivateSubnet1
+      RouteTableId: !Ref PrivateRouteTable
+  PrivateSubnet2RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PrivateSubnet2
+      RouteTableId: !Ref PrivateRouteTable
 
   S3Endpoint:
     Type: AWS::EC2::VPCEndpoint
     Properties:
       VpcId: !Ref MyVpc
-      RouteTableIds: [!Ref PublicRouteTable]
+      RouteTableIds: [!Ref PublicRouteTable, !Ref PrivateRouteTable]
       ServiceName: !Join [".", ["com.amazonaws", !Ref "AWS::Region", "s3"]]
       PolicyDocument:
         Version: "2012-10-17"
@@ -113,11 +147,18 @@ Resources:
 Outputs:
   VpcId:
     Value: !Ref MyVpc
+    Export:
+      Name: !Sub "${AWS::StackName}-VpcId"
   Ipv4CidrBlock:
     Value: !GetAtt MyVpc.CidrBlock
   Ipv6CidrBlock:
     Value: !Select [0, !GetAtt MyVpc.Ipv6CidrBlocks]
-  Subnet1Id:
+
+  PublicSubnet1Id:
     Value: !Ref PublicSubnet1
-  Subnet2Id:
+  PublicSubnet2Id:
     Value: !Ref PublicSubnet2
+  PrivateSubnet1Id:
+    Value: !Ref PrivateSubnet1
+  PrivateSubnet2Id:
+    Value: !Ref PrivateSubnet2
