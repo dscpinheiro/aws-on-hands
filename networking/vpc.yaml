@@ -59,6 +59,42 @@ Resources:
       DestinationIpv6CidrBlock: "::/0"
       EgressOnlyInternetGatewayId: !Ref EgressOnlyInternetGateway
 
+  PublicSubnet1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MyVpc
+      AvailabilityZone: !Select 
+        - 0
+        - Fn::GetAZs: !Ref "AWS::Region"
+      CidrBlock: "10.200.0.0/22"
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: cloudformation-public-subnet1
+  PublicSubnet2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MyVpc
+      AvailabilityZone: !Select 
+        - 1
+        - Fn::GetAZs: !Ref "AWS::Region"
+      CidrBlock: "10.200.4.0/22"
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: cloudformation-public-subnet2
+
+  Subnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet1
+      RouteTableId: !Ref PublicRouteTable
+  Subnet2RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet2
+      RouteTableId: !Ref PublicRouteTable
+
 Outputs:
   VpcId:
     Value: !Ref MyVpc
@@ -66,3 +102,7 @@ Outputs:
     Value: !GetAtt MyVpc.CidrBlock
   Ipv6CidrBlock:
     Value: !Select [0, !GetAtt MyVpc.Ipv6CidrBlocks]
+  Subnet1Id:
+    Value: !Ref PublicSubnet1
+  Subnet2Id:
+    Value: !Ref PublicSubnet2
