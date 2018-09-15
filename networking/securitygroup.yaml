@@ -1,0 +1,22 @@
+Resources:
+  SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId: !ImportValue VpcStack-VpcId
+      GroupDescription: Enable access via HTTP and HTTPS
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: cloudformation-webapp-sg
+
+Outputs:
+  SecurityGroupId:
+    Value: !Ref SecurityGroup
