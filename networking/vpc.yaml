@@ -39,13 +39,6 @@ Resources:
       Tags:
         - Key: Name
           Value: cloudformation-public-rt
-  PrivateRouteTable:
-    Type: AWS::EC2::RouteTable
-    Properties:
-      VpcId: !Ref MyVpc
-      Tags:
-        - Key: Name
-          Value: cloudformation-private-rt
   PublicRouteIpv4:
     Type: AWS::EC2::Route
     DependsOn: InternetGateway
@@ -60,6 +53,34 @@ Resources:
       RouteTableId: !Ref PublicRouteTable
       DestinationIpv6CidrBlock: "::/0"
       EgressOnlyInternetGatewayId: !Ref EgressOnlyInternetGateway
+
+  PrivateRouteTable1:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref MyVpc
+      Tags:
+        - Key: Name
+          Value: cloudformation-private-rt1
+  NatGateway1Route:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable1
+      DestinationCidrBlock: "0.0.0.0/0"
+      NatGatewayId: !Ref NatGateway1
+
+  PrivateRouteTable2:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref MyVpc
+      Tags:
+        - Key: Name
+          Value: cloudformation-private-rt2
+  NatGateway2Route:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable2
+      DestinationCidrBlock: "0.0.0.0/0"
+      NatGatewayId: !Ref NatGateway2
 
   PublicSubnet1:
     Type: AWS::EC2::Subnet
@@ -108,6 +129,34 @@ Resources:
         - Key: Name
           Value: cloudformation-private-subnet2
 
+  NatGateway1EIP:
+    Type: AWS::EC2::EIP
+    DependsOn: AttachGateway
+    Properties:
+      Domain: vpc
+  NatGateway1:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId: !GetAtt NatGateway1EIP.AllocationId
+      SubnetId: !Ref PublicSubnet1
+      Tags:
+        - Key: Name
+          Value: cloudformation-natgateway1
+
+  NatGateway2EIP:
+    Type: AWS::EC2::EIP
+    DependsOn: AttachGateway
+    Properties:
+      Domain: vpc
+  NatGateway2:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId: !GetAtt NatGateway2EIP.AllocationId
+      SubnetId: !Ref PublicSubnet2
+      Tags:
+        - Key: Name
+          Value: cloudformation-natgateway2
+
   PublicSubnet1RouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
@@ -122,18 +171,18 @@ Resources:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       SubnetId: !Ref PrivateSubnet1
-      RouteTableId: !Ref PrivateRouteTable
+      RouteTableId: !Ref PrivateRouteTable1
   PrivateSubnet2RouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       SubnetId: !Ref PrivateSubnet2
-      RouteTableId: !Ref PrivateRouteTable
+      RouteTableId: !Ref PrivateRouteTable2
 
   S3Endpoint:
     Type: AWS::EC2::VPCEndpoint
     Properties:
       VpcId: !Ref MyVpc
-      RouteTableIds: [!Ref PublicRouteTable, !Ref PrivateRouteTable]
+      RouteTableIds: [!Ref PublicRouteTable, !Ref PrivateRouteTable1, !Ref PrivateRouteTable2]
       ServiceName: !Join [".", ["com.amazonaws", !Ref "AWS::Region", "s3"]]
       PolicyDocument:
         Version: "2012-10-17"
