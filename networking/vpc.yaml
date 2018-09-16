@@ -192,6 +192,20 @@ Resources:
             Action:
               - "s3:*"
             Resource: "*"
+  DynamoEndpoint:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      VpcId: !Ref MyVpc
+      RouteTableIds: [!Ref PublicRouteTable, !Ref PrivateRouteTable1, !Ref PrivateRouteTable2]
+      ServiceName: !Join [".", ["com.amazonaws", !Ref "AWS::Region", "dynamodb"]]
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal: "*"
+            Action:
+              - "dynamodb:*"
+            Resource: "*"
 
 Outputs:
   VpcId:
