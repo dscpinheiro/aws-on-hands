@@ -32,56 +32,6 @@ Resources:
     Properties:
       VpcId: !Ref MyVpc
 
-  PublicRouteTable:
-    Type: AWS::EC2::RouteTable
-    Properties:
-      VpcId: !Ref MyVpc
-      Tags:
-        - Key: Name
-          Value: cloudformation-public-rt
-  PublicRouteIpv4:
-    Type: AWS::EC2::Route
-    DependsOn: InternetGateway
-    Properties:
-      RouteTableId: !Ref PublicRouteTable
-      DestinationCidrBlock: "0.0.0.0/0"
-      GatewayId: !Ref InternetGateway
-  PublicRouteIpv6:
-    Type: AWS::EC2::Route
-    DependsOn: EgressOnlyInternetGateway
-    Properties:
-      RouteTableId: !Ref PublicRouteTable
-      DestinationIpv6CidrBlock: "::/0"
-      EgressOnlyInternetGatewayId: !Ref EgressOnlyInternetGateway
-
-  PrivateRouteTable1:
-    Type: AWS::EC2::RouteTable
-    Properties:
-      VpcId: !Ref MyVpc
-      Tags:
-        - Key: Name
-          Value: cloudformation-private-rt1
-  NatGateway1Route:
-    Type: AWS::EC2::Route
-    Properties:
-      RouteTableId: !Ref PrivateRouteTable1
-      DestinationCidrBlock: "0.0.0.0/0"
-      NatGatewayId: !Ref NatGateway1
-
-  PrivateRouteTable2:
-    Type: AWS::EC2::RouteTable
-    Properties:
-      VpcId: !Ref MyVpc
-      Tags:
-        - Key: Name
-          Value: cloudformation-private-rt2
-  NatGateway2Route:
-    Type: AWS::EC2::Route
-    Properties:
-      RouteTableId: !Ref PrivateRouteTable2
-      DestinationCidrBlock: "0.0.0.0/0"
-      NatGatewayId: !Ref NatGateway2
-
   PublicSubnet1:
     Type: AWS::EC2::Subnet
     Properties:
@@ -156,6 +106,56 @@ Resources:
       Tags:
         - Key: Name
           Value: cloudformation-natgateway2
+
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref MyVpc
+      Tags:
+        - Key: Name
+          Value: cloudformation-public-rt
+  PublicRouteIpv4:
+    Type: AWS::EC2::Route
+    DependsOn: InternetGateway
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: "0.0.0.0/0"
+      GatewayId: !Ref InternetGateway
+  PublicRouteIpv6:
+    Type: AWS::EC2::Route
+    DependsOn: EgressOnlyInternetGateway
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationIpv6CidrBlock: "::/0"
+      EgressOnlyInternetGatewayId: !Ref EgressOnlyInternetGateway
+
+  PrivateRouteTable1:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref MyVpc
+      Tags:
+        - Key: Name
+          Value: cloudformation-private-rt1
+  NatGateway1Route:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable1
+      DestinationCidrBlock: "0.0.0.0/0"
+      NatGatewayId: !Ref NatGateway1
+
+  PrivateRouteTable2:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref MyVpc
+      Tags:
+        - Key: Name
+          Value: cloudformation-private-rt2
+  NatGateway2Route:
+    Type: AWS::EC2::Route
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable2
+      DestinationCidrBlock: "0.0.0.0/0"
+      NatGatewayId: !Ref NatGateway2
 
   PublicSubnet1RouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
