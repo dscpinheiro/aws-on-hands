@@ -71,6 +71,19 @@ Resources:
       Username: !Ref AdminUser
       UserPoolId: !Ref MyAppUserPool
 
+  ApiClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      ClientName: ApiClient
+      ExplicitAuthFlows:
+        - USER_PASSWORD_AUTH
+        - ADMIN_NO_SRP_AUTH
+      GenerateSecret: true
+      RefreshTokenValidity: 5
+      UserPoolId: !Ref MyAppUserPool
+
 Outputs:
   UserPoolId:
     Value: !Ref MyAppUserPool
+  ApiClientId:
+    Value: !Ref ApiClient
