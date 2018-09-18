@@ -1,0 +1,76 @@
+Parameters:
+  Email:
+    Description: Email for the user pool administrator
+    Type: String
+
+Resources:
+  MyAppUserPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      AdminCreateUserConfig:
+        AllowAdminCreateUserOnly: false
+        UnusedAccountValidityDays: 30
+      AliasAttributes:
+        - email
+        - preferred_username
+      AutoVerifiedAttributes:
+        - email
+      DeviceConfiguration:
+        ChallengeRequiredOnNewDevice: true
+        DeviceOnlyRememberedOnUserPrompt: true
+      Schema:
+        - Name: email
+          StringAttributeConstraints:
+            MinLength: 3
+            MaxLength: 100
+          Required: true
+        - Name: name
+          Mutable: true
+          StringAttributeConstraints:
+            MinLength: 3
+            MaxLength: 50
+          Required: true
+        - Name: preferred_username
+          StringAttributeConstraints:
+            MinLength: 3
+            MaxLength: 50
+          Required: true
+      Policies:
+        PasswordPolicy:
+          MinimumLength: 10
+          RequireLowercase: true
+          RequireNumbers: true
+          RequireSymbols: false
+          RequireUppercase: true
+      UserPoolName: my-app-userpool
+
+  AdminUserGroup:
+    Type: AWS::Cognito::UserPoolGroup
+    Properties:
+      GroupName: Administrators
+      Precedence: 0
+      UserPoolId: !Ref MyAppUserPool
+  AdminUser:
+    Type: AWS::Cognito::UserPoolUser
+    Properties:
+      DesiredDeliveryMediums:
+        - EMAIL
+      UserAttributes:
+        - Name: email
+          Value: !Ref Email
+        - Name: name
+          Value: Administrator
+        - Name: preferred_username
+          Value: admin
+      Username: admin
+      UserPoolId: !Ref MyAppUserPool
+  AdminAttachment:
+    Type: AWS::Cognito::UserPoolUserToGroupAttachment
+    Properties:
+      GroupName: !Ref AdminUserGroup
+      Username: !Ref AdminUser
+      UserPoolId: !Ref MyAppUserPool
+
+Outputs:
+  UserPoolId:
+    Value: !Ref MyAppUserPool
