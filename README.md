@@ -40,6 +40,6 @@ All CloudFormation templates were created in the Oregon (us-west-2) region.
     - [x] KMS
     - [x] SNS / SQS
     - [ ] More complex IAM policies
-    - [ ] SAM => https://github.com/awslabs/serverless-application-model
+    - [ ] SAM => https://github.com/awslabs/serverless-application-model / https://aws.amazon.com/blogs/compute/developing-net-core-aws-lambda-functions/
     - [x] Networking (creating VPC from scratch)
     - [x] Terraform => https://www.terraform.io/intro/getting-started/build.html / https://github.com/terraform-providers/terraform-provider-aws/tree/master/examples
