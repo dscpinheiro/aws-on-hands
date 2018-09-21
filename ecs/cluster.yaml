@@ -116,7 +116,7 @@ Resources:
   ECSLaunchConfiguration:
     Type: AWS::AutoScaling::LaunchConfiguration
     Properties:
-      ImageId: ami-093381d21a4fc38d1
+      ImageId: ami-00430184c7bb49914
       InstanceType: !Ref InstanceType
       SecurityGroups:
         - !Ref ECSHostSecurityGroup
