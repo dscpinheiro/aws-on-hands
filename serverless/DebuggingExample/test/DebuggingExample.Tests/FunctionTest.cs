@@ -19,14 +19,12 @@ namespace DebuggingExample.Tests
         [Fact]
         public void TetGetMethod()
         {
-            TestLambdaContext context;
-            APIGatewayProxyRequest request;
             APIGatewayProxyResponse response;
 
             var functions = new Functions();
+            var request = new APIGatewayProxyRequest();
+            var context = new TestLambdaContext();
 
-            request = new APIGatewayProxyRequest();
-            context = new TestLambdaContext();
             response = functions.Get(request, context);
             Assert.Equal(200, response.StatusCode);
         }

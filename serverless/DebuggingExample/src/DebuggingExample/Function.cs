@@ -21,10 +21,28 @@ namespace DebuggingExample
 
         public APIGatewayProxyResponse Get(APIGatewayProxyRequest request, ILambdaContext context)
         {
-            var result = _processor.CurrentTimeUTC();
+            LogMessage(context, "Processing request started");
 
-            return CreateResponse(result);
+            APIGatewayProxyResponse response;
+
+            try
+            {
+                var result = _processor.CurrentTimeUTC();
+                response = CreateResponse(result);
+
+                LogMessage(context, "Processing request succeeded.");
+            }
+            catch (Exception ex)
+            {
+                LogMessage(context, $"Processing request failed - {ex.Message}");
+                response = CreateResponse(null);
+            }
+
+            return response;
         }
+
+        private void LogMessage(ILambdaContext context, string message) => 
+            context.Logger.LogLine($"{context.AwsRequestId}:{context.FunctionName} - {message}");
 
         private APIGatewayProxyResponse CreateResponse(DateTime? result)
         {
