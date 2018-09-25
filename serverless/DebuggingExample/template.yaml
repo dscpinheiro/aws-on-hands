@@ -5,6 +5,7 @@ Description: Sample SAM Template for DebuggingExample
 Globals:
   Function:
     Timeout: 10
+    Tracing: Active
 
 Resources:
   DebuggingExampleFunction:

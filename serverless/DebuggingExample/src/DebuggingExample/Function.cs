@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+
 using Amazon.Lambda.Core;
 using Amazon.Lambda.APIGatewayEvents;
+using Amazon.XRay.Recorder.Core;
+
 using Newtonsoft.Json;
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
@@ -27,7 +30,8 @@ namespace DebuggingExample
 
             try
             {
-                var result = _processor.CurrentTimeUTC();
+                var result = TraceFunction(_processor.CurrentTimeUTC, "GetTime");
+
                 response = CreateResponse(result);
 
                 LogMessage(context, "Processing request succeeded.");
@@ -62,5 +66,14 @@ namespace DebuggingExample
 
             return response;
         }
+
+        private T TraceFunction<T>(Func<T> func, string subSegmentName)
+        {
+            AWSXRayRecorder.Instance.BeginSubsegment(subSegmentName);
+            T result = func();
+            AWSXRayRecorder.Instance.EndSubsegment();
+
+            return result;
+        } 
     }
 }
