@@ -182,8 +182,9 @@ Resources:
     Type: AWS::EC2::VPCEndpoint
     Properties:
       VpcId: !Ref MyVpc
+      VpcEndpointType: Gateway
       RouteTableIds: [!Ref PublicRouteTable, !Ref PrivateRouteTable1, !Ref PrivateRouteTable2]
-      ServiceName: !Join [".", ["com.amazonaws", !Ref "AWS::Region", "s3"]]
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.s3"
       PolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -196,8 +197,9 @@ Resources:
     Type: AWS::EC2::VPCEndpoint
     Properties:
       VpcId: !Ref MyVpc
+      VpcEndpointType: Gateway
       RouteTableIds: [!Ref PublicRouteTable, !Ref PrivateRouteTable1, !Ref PrivateRouteTable2]
-      ServiceName: !Join [".", ["com.amazonaws", !Ref "AWS::Region", "dynamodb"]]
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.dynamodb"
       PolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -206,6 +208,29 @@ Resources:
             Action:
               - "dynamodb:*"
             Resource: "*"
+
+  CloudFormationEndpoint:
+    Type: AWS::EC2::VPCEndpoint
+    Properties:
+      VpcId: !Ref MyVpc
+      VpcEndpointType: Interface
+      ServiceName: !Sub "com.amazonaws.${AWS::Region}.cloudformation"
+      PrivateDnsEnabled: true
+      SubnetIds: [!Ref PrivateSubnet1, !Ref PrivateSubnet2]
+      SecurityGroupIds: [!Ref CloudFormationEndpointSG]
+  CloudFormationEndpointSG:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: "Traffic into CloudFormation Endpoint"
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 443
+        ToPort: 443
+        CidrIp: "0.0.0.0/0"
+      VpcId: !Ref MyVpc
+      Tags:
+        - Key: Name
+          Value: cloudformation-endpoint-sg
 
 Outputs:
   VpcId:
