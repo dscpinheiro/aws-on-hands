@@ -24,7 +24,7 @@ Outputs:
 Resources:
   DebuggingExampleFunction:
     Properties:
-      CodeUri: s3://debugging-example-deploy-2837283/1faa3da77ebc49abefd1f3f116f4f759
+      CodeUri: s3://debugging-example-deploy/1faa3da77ebc49abefd1f3f116f4f759
       Environment:
         Variables:
           PARAM1: VALUE
