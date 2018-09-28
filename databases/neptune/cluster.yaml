@@ -1,0 +1,39 @@
+Parameters:
+  SubnetIds:
+    Type: List<AWS::EC2::Subnet::Id>
+
+Resources:
+  DbSubnetGroup:
+    Type: AWS::Neptune::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: My custom subnet group
+      DBSubnetGroupName: customgroup
+      SubnetIds: !Ref SubnetIds
+
+  DbCluster:
+    Type: AWS::Neptune::DBCluster
+    Properties:
+      BackupRetentionPeriod: 7
+      DBClusterIdentifier: my-neptune-cluster
+      DBSubnetGroupName: !Ref DbSubnetGroup
+      IamAuthEnabled: true
+      Port: 8182
+      PreferredBackupWindow: 02:00-05:00
+
+  DbInstance:
+    Type: AWS::Neptune::DBInstance
+    Properties:
+      AutoMinorVersionUpgrade: true
+      DBClusterIdentifier: !Ref DbCluster
+      DBInstanceClass: db.r4.large
+      DBInstanceIdentifier: my-neptune-instance
+      DBSubnetGroupName: !Ref DbSubnetGroup
+      MultiAZ: true
+
+Outputs:
+  ClusterEndpoint:
+    Value: !GetAtt DbCluster.Endpoint
+  ClusterReadEndpoint:
+    Value: !GetAtt DbCluster.ReadEndpoint
+  ClusterPort:
+    Value: !GetAtt DbCluster.Port
