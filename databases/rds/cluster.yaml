@@ -1,0 +1,87 @@
+Parameters:
+  MasterUsername:
+    Type: String
+  MasterUserPassword:
+    Type: String
+    MinLength: 12
+    NoEcho: true
+  DbInstanceClass:
+    Type: String
+    Default: db.r4.large
+    AllowedValues:
+      - db.r4.large
+      - db.r4.xlarge
+      - db.r4.2xlarge
+  SubnetIds:
+    Type: List<AWS::EC2::Subnet::Id>
+
+Resources:
+  MyCluster:
+    Type: AWS::RDS::DBCluster
+    #DeletionPolicy: Delete
+    Properties:
+      AvailabilityZones: !GetAZs ""
+      BackupRetentionPeriod: 10
+      DatabaseName: MyCloudformationDB
+      DBClusterIdentifier: my-cloudformation-cluster
+      DBClusterParameterGroupName: !Ref MyClusterParameterGroup
+      DBSubnetGroupName: !Ref MySubnetGroup
+      Engine: aurora-postgresql
+      EngineMode: provisioned
+      EngineVersion: 9.6.9
+      MasterUsername: !Ref MasterUsername
+      MasterUserPassword: !Ref MasterUserPassword
+      Port: 3306
+      PreferredBackupWindow: 01:00-03:00
+      PreferredMaintenanceWindow: sun:03:30-sun:05:30
+
+  MyInstance:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      AllowMajorVersionUpgrade: false
+      AutoMinorVersionUpgrade: true
+      DBSubnetGroupName: !Ref MySubnetGroup
+      DBParameterGroupName: !Ref MyDbParameterGroup
+      DBClusterIdentifier: !Ref MyCluster
+      DBInstanceClass: !Ref DbInstanceClass
+      DBInstanceIdentifier: my-cloudformation-instance
+      Engine: aurora-postgresql
+  MyReplicaInstance:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      AllowMajorVersionUpgrade: false
+      AutoMinorVersionUpgrade: true
+      DBSubnetGroupName: !Ref MySubnetGroup
+      DBParameterGroupName: !Ref MyDbParameterGroup
+      DBClusterIdentifier: !Ref MyCluster
+      DBInstanceClass: !Ref DbInstanceClass
+      DBInstanceIdentifier: my-cloudformation-replica
+      Engine: aurora-postgresql
+
+  MySubnetGroup:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: CloudFormation Sample Aurora Subnet Group
+      SubnetIds: !Ref SubnetIds
+  MyClusterParameterGroup:
+    Type: AWS::RDS::DBClusterParameterGroup
+    Properties:
+      Description: CloudFormation Sample Aurora Cluster Parameter Group
+      Family: aurora-postgresql9.6
+      Parameters:
+        rds.force_ssl: 1
+  MyDbParameterGroup:
+    Type: AWS::RDS::DBParameterGroup
+    Properties:
+      Description: CloudFormation Sample Aurora Parameter Group
+      Family: aurora-postgresql9.6
+      Parameters:
+        log_statement: all
+
+Outputs:
+  ClusterEndpoint:
+    Value: !GetAtt MyCluster.Endpoint.Address
+  ClusterReadEndpoint:
+    Value: !GetAtt MyCluster.ReadEndpoint.Address
+  ClusterPort:
+    Value: !GetAtt MyCluster.Endpoint.Port
