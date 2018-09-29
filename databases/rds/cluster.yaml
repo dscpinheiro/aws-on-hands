@@ -14,11 +14,14 @@ Parameters:
       - db.r4.2xlarge
   SubnetIds:
     Type: List<AWS::EC2::Subnet::Id>
+  Email:
+    Description: Email to include in the events topic subscription list
+    Type: String
 
 Resources:
   MyCluster:
     Type: AWS::RDS::DBCluster
-    #DeletionPolicy: Delete
+    DeletionPolicy: Delete
     Properties:
       AvailabilityZones: !GetAZs ""
       BackupRetentionPeriod: 10
@@ -77,6 +80,24 @@ Resources:
       Family: aurora-postgresql9.6
       Parameters:
         log_statement: all
+
+  EventsTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: Topic for RDS events 
+      TopicName: RdsEventsTopic
+      Subscription: 
+        - Endpoint: !Ref Email
+          Protocol: email
+  EventSubscription:
+    Type: AWS::RDS::EventSubscription
+    Properties:
+      Enabled: true
+      SnsTopicArn: !Ref EventsTopic
+      SourceIds:
+        - !Ref MyWriterInstance
+        - !Ref MyReaderInstance
+      SourceType: db-instance
 
 Outputs:
   ClusterEndpoint:
