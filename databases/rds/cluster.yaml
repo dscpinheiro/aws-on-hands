@@ -35,7 +35,7 @@ Resources:
       PreferredBackupWindow: 01:00-03:00
       PreferredMaintenanceWindow: sun:03:30-sun:05:30
 
-  MyInstance:
+  MyWriterInstance:
     Type: AWS::RDS::DBInstance
     Properties:
       AllowMajorVersionUpgrade: false
@@ -44,9 +44,9 @@ Resources:
       DBParameterGroupName: !Ref MyDbParameterGroup
       DBClusterIdentifier: !Ref MyCluster
       DBInstanceClass: !Ref DbInstanceClass
-      DBInstanceIdentifier: my-cloudformation-instance
+      DBInstanceIdentifier: my-cloudformation-writer
       Engine: aurora-postgresql
-  MyReplicaInstance:
+  MyReaderInstance:
     Type: AWS::RDS::DBInstance
     Properties:
       AllowMajorVersionUpgrade: false
@@ -55,7 +55,7 @@ Resources:
       DBParameterGroupName: !Ref MyDbParameterGroup
       DBClusterIdentifier: !Ref MyCluster
       DBInstanceClass: !Ref DbInstanceClass
-      DBInstanceIdentifier: my-cloudformation-replica
+      DBInstanceIdentifier: my-cloudformation-reader
       Engine: aurora-postgresql
 
   MySubnetGroup:
