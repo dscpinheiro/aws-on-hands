@@ -62,8 +62,8 @@ Resources:
         Fn::Base64: |
           #!/bin/bash -xe
           yum -y install httpd
-          service httpd start
-          chkconfig httpd on
+          systemctl start httpd
+          systemctl enable httpd
           echo "Hello from CloudFormation!" > /var/www/html/index.html
 
 Outputs:

@@ -28,8 +28,8 @@ Resources:
         Fn::Base64: |
           #!/bin/bash -xe
           yum -y install httpd
-          service httpd start
-          chkconfig httpd on
+          systemctl start httpd
+          systemctl enable httpd
           echo "Hello from CloudFormation - Instance 1!" > /var/www/html/index.html
   Ec2Instance2:
     Type: AWS::EC2::Instance
@@ -45,8 +45,8 @@ Resources:
         Fn::Base64: |
           #!/bin/bash -xe
           yum -y install httpd
-          service httpd start
-          chkconfig httpd on
+          systemctl start httpd
+          systemctl enable httpd
           echo "Hello from CloudFormation - Instance 2!" > /var/www/html/index.html
 
   RecordSet:

@@ -2,6 +2,7 @@
 sudo yum update -y
 sudo yum -y install httpd
 sudo service httpd start
-sudo chkconfig httpd on
+sudo systemctl start httpd
+sudo systemctl enable httpd
 
 echo "Hello from Terraform!" > /var/www/html/index.html
