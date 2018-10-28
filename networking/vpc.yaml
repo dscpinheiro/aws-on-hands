@@ -244,9 +244,17 @@ Outputs:
 
   PublicSubnet1Id:
     Value: !Ref PublicSubnet1
+    Export:
+      Name: !Sub "${AWS::StackName}-PublicSubnet1Id"
   PublicSubnet2Id:
     Value: !Ref PublicSubnet2
+    Export:
+      Name: !Sub "${AWS::StackName}-PublicSubnet2Id"
   PrivateSubnet1Id:
     Value: !Ref PrivateSubnet1
+    Export:
+      Name: !Sub "${AWS::StackName}-PrivateSubnet1Id"
   PrivateSubnet2Id:
     Value: !Ref PrivateSubnet2
+    Export:
+      Name: !Sub "${AWS::StackName}-PrivateSubnet2Id"
