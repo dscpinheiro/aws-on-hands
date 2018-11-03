@@ -67,7 +67,7 @@ Resources:
     Properties:
       ApplicationName: !Ref MyApplication
       EnvironmentName: MyEnvironment
-      SolutionStackName: 64bit Amazon Linux 2018.03 v2.12.2 running Docker 18.03.1-ce
+      SolutionStackName: 64bit Amazon Linux 2018.03 v2.12.4 running Docker 18.06.1-ce
       Tier:
         Name: WebServer
         Type: Standard
