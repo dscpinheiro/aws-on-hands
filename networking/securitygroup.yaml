@@ -1,8 +1,18 @@
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+    AllowedValues:
+      - dev
+      - staging
+      - prod
+
 Resources:
   SecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      VpcId: !ImportValue VpcStack-VpcId
+      VpcId: 
+        Fn::ImportValue: !Sub "${Environment}-VpcId"
       GroupDescription: Enable access via HTTP and HTTPS
       SecurityGroupIngress:
         - IpProtocol: tcp
@@ -15,7 +25,7 @@ Resources:
           CidrIp: 0.0.0.0/0
       Tags:
         - Key: Name
-          Value: cloudformation-webapp-sg
+          Value: !Sub "${Environment}-webapp-sg"
 
 Outputs:
   SecurityGroupId:
