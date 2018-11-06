@@ -33,12 +33,15 @@ namespace NetworkRangeManager
                 var vpcRange = request.ResourceProperties.VpcRange;
                 var cidr = request.ResourceProperties.Cidr;
 
-                context.Logger.LogLine($"Received {type} request for vpc '{vpcName}' with cidr /{cidr}");
-
-                addressRange = type == NetworkType.Vpc ? await GetVpcRange(vpcName, cidr) : await GetSubnetRange(vpcRange, vpcName, cidr);
-                if (string.IsNullOrWhiteSpace(addressRange))
+                if (request.RequestType == "Create")
                 {
-                    throw new Exception("No available addresses for parameters specified");
+                    context.Logger.LogLine($"Received {type} request for vpc '{vpcName}' with cidr /{cidr}");
+
+                    addressRange = type == NetworkType.Vpc ? await GetVpcRange(vpcName, cidr) : await GetSubnetRange(vpcRange, vpcName, cidr);
+                    if (string.IsNullOrWhiteSpace(addressRange))
+                    {
+                        throw new Exception("No available addresses for parameters specified");
+                    }
                 }
 
                 status = "SUCCESS";
