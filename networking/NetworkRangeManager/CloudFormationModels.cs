@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace NetworkRangeManager
@@ -62,29 +63,19 @@ namespace NetworkRangeManager
         public string VpcName { get; set; }
 
         [DataMember]
-        public string ParentRange { get; set; }
+        public byte VpcCidr { get; set; }
 
         [DataMember]
-        public byte Cidr { get; set; }
-
-        [DataMember]
-        public NetworkType NetworkType { get; set; }
-    }
-
-    [DataContract]
-    public enum NetworkType
-    {
-        [DataMember]
-        Vpc = 0,
-
-        [DataMember]
-        Subnet = 1
+        public List<byte> SubnetCidrs { get; set; }
     }
 
     [DataContract]
     public class ResponseData
     {
         [DataMember]
-        public string AddressRange { get; set; }
+        public string VpcAddressRange { get; set; }
+
+        [DataMember]
+        public List<string> SubnetsAddressRanges { get; set; }
     }
 }
