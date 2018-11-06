@@ -22,73 +22,50 @@ namespace NetworkRangeManager
 
         public async Task<CustomResourceResponse> FunctionHandler(CustomResourceRequest request, ILambdaContext context)
         {
-            var status = "FAILED";
-            var addressRange = string.Empty;
-            var reason = string.Empty;
+            var response = new CustomResourceResponse
+            {
+                Status = "FAILED",
+                PhysicalResourceId = request.PhysicalResourceId,
+                StackId = request.StackId,
+                RequestId = request.RequestId,
+                LogicalResourceId = request.LogicalResourceId
+            };
 
             var type = request.ResourceProperties.NetworkType;
             var vpcName = request.ResourceProperties.VpcName;
-            var vpcRange = request.ResourceProperties.VpcRange;
+            var parentRange = string.IsNullOrWhiteSpace(request.ResourceProperties.ParentRange) ? PrivateABlock : request.ResourceProperties.ParentRange;
             var cidr = request.ResourceProperties.Cidr;
-
-            var physicalResourceId = 
-                string.IsNullOrWhiteSpace(request.PhysicalResourceId) ? 
-                new { vpcName, addressRange }.GetHashCode().ToString() : 
-                request.PhysicalResourceId;
+            var tableName = type == NetworkType.Vpc ? "VpcNetworkRanges" : "SubnetNetworkRanges";
 
             try
             {
+                context.Logger.LogLine($"Received '{request.RequestType}' request for vpc '{vpcName}' and block address {parentRange} - {cidr}");
+
                 if (request.RequestType == "Create")
                 {
-                    context.Logger.LogLine($"Received {type} request for vpc '{vpcName}' with cidr /{cidr}");
-
-                    addressRange = type == NetworkType.Vpc ? await GetVpcRange(vpcName, cidr) : await GetSubnetRange(vpcRange, vpcName, cidr);
+                    var addressRange = await InternalGetRange(parentRange, cidr, tableName, vpcName);
                     if (string.IsNullOrWhiteSpace(addressRange))
                     {
                         throw new Exception("No available addresses for parameters specified");
                     }
+
+                    response.PhysicalResourceId = GenerateRandomString();
+                    response.Data = new ResponseData { AddressRange = addressRange };
+                }
+                else if (request.RequestType == "Delete")
+                {
+                    await DeleteRangeAsync(new NetworkRange { AddressRange = parentRange, VpcName = vpcName }, tableName);
                 }
 
-                status = "SUCCESS";
+                response.Status = "SUCCESS";
             }
             catch (Exception exception)
             {
-                reason = exception.Message;
+                response.Reason = exception.Message;
                 context.Logger.LogLine(exception.ToString());
             }
 
-            return new CustomResourceResponse
-            {
-                Status = status,
-                Reason = reason,
-                PhysicalResourceId = physicalResourceId,
-                StackId = request.StackId,
-                RequestId = request.RequestId,
-                LogicalResourceId = request.LogicalResourceId,
-                Data = new ResponseData { AddressRange = addressRange }
-            };
-        }
-
-        private void ValidateCidr(byte cidr)
-        {
-            if (cidr < 16 || cidr > 28)
-            {
-                throw new ArgumentOutOfRangeException(nameof(cidr));
-            }
-        }
-
-        public async Task<string> GetVpcRange(string vpcName, byte cidr = 16)
-        {
-            ValidateCidr(cidr);
-
-            return await InternalGetRange(PrivateABlock, cidr, "VpcNetworkRanges", vpcName);
-        }
-
-        public async Task<string> GetSubnetRange(string vpcRange, string vpcName, byte cidr = 24)
-        {
-            ValidateCidr(cidr);
-
-            return await InternalGetRange(vpcRange, cidr, "SubnetNetworkRanges", vpcName);
+            return response;
         }
 
         /// <summary>
@@ -97,6 +74,8 @@ namespace NetworkRangeManager
         /// </summary>
         private async Task<string> InternalGetRange(string addressBlock, byte cidr, string tableName, string vpcName)
         {
+            if (cidr < 16 || cidr > 28) throw new ArgumentOutOfRangeException(nameof(cidr));
+
             var network = IPNetwork.Parse(addressBlock);
             var subnets = network.Subnet(cidr);
             var numberOfPossibleSubnets = (int)subnets.Count;
@@ -135,12 +114,20 @@ namespace NetworkRangeManager
 
         static async Task<bool> CanUseRangeAsync(NetworkRange range, string tableName)
         {
-            var storedRange = await _dynamoContext.LoadAsync(range, new DynamoDBOperationConfig
-            {
-                OverrideTableName = tableName
-            });
+            var storedRange = await _dynamoContext.LoadAsync(range, new DynamoDBOperationConfig { OverrideTableName = tableName });
 
             return storedRange == null;
+        }
+
+        static async Task DeleteRangeAsync(NetworkRange range, string tableName)
+        {
+            await _dynamoContext.DeleteAsync(range, new DynamoDBOperationConfig { OverrideTableName = tableName });
+        }
+
+        static string GenerateRandomString(int length = 24)
+        {
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            return new string(Enumerable.Repeat(chars, length).Select(s => s[_random.Next(s.Length)]).ToArray());
         }
     }
 }
