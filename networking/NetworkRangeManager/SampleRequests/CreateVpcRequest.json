@@ -1,13 +1,13 @@
 {
-    "RequestType": "Create",
-    "ResponseURL": "http://pre-signed-S3-url-for-response",
-    "StackId": "arn:aws:cloudformation:us-west-2:123456789012:stack/MyStack/guid",
-    "RequestId": "unique id for this create request",
-    "ResourceType": "Custom::TestResource",
-    "LogicalResourceId": "MyLogicalTestResource",
-    "ResourceProperties": {
-      "VpcName": "dev",
-      "Cidr": 16,
-      "NetworkType": 0
-    }
+  "RequestType": "Create",
+  "ResponseURL": "http://pre-signed-S3-url-for-response",
+  "StackId": "arn:aws:cloudformation:us-west-2:123456789012:stack/MyStack/guid",
+  "RequestId": "unique id for this create request",
+  "ResourceType": "Custom::TestResource",
+  "LogicalResourceId": "MyLogicalTestResource",
+  "ResourceProperties": {
+    "VpcName": "dev",
+    "VpcCidr": 16,
+    "SubnetCidrs": [22, 22, 20, 20]
   }
+}
