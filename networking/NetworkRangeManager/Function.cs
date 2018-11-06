@@ -31,6 +31,11 @@ namespace NetworkRangeManager
             var vpcRange = request.ResourceProperties.VpcRange;
             var cidr = request.ResourceProperties.Cidr;
 
+            var physicalResourceId = 
+                string.IsNullOrWhiteSpace(request.PhysicalResourceId) ? 
+                new { vpcName, addressRange }.GetHashCode().ToString() : 
+                request.PhysicalResourceId;
+
             try
             {
                 if (request.RequestType == "Create")
@@ -56,7 +61,7 @@ namespace NetworkRangeManager
             {
                 Status = status,
                 Reason = reason,
-                PhysicalResourceId = new { vpcName, addressRange }.GetHashCode().ToString(),
+                PhysicalResourceId = physicalResourceId,
                 StackId = request.StackId,
                 RequestId = request.RequestId,
                 LogicalResourceId = request.LogicalResourceId,
