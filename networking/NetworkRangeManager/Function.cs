@@ -115,7 +115,7 @@ namespace NetworkRangeManager
                 }
             } while (validSubnet == null && count < numberOfPossibleSubnets);
 
-            if (networkRange == null)
+            if (validSubnet == null)
             {
                 return string.Empty;
             }
