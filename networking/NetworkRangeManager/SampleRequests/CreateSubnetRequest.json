@@ -7,7 +7,7 @@
     "LogicalResourceId": "MyLogicalTestResource",
     "ResourceProperties": {
       "VpcName": "dev",
-      "VpcRange": "10.10.0.0/16",
+      "ParentRange": "10.10.0.0/16",
       "Cidr": 24,
       "NetworkType": 1
     }
