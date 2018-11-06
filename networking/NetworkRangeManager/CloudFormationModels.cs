@@ -62,7 +62,7 @@ namespace NetworkRangeManager
         public string VpcName { get; set; }
 
         [DataMember]
-        public string VpcRange { get; set; }
+        public string ParentRange { get; set; }
 
         [DataMember]
         public byte Cidr { get; set; }
