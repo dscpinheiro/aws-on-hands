@@ -5,6 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
+using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.Lambda.Core;
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
@@ -14,11 +15,13 @@ namespace NetworkRangeManager
 {
     public class Function
     {
-        private static AmazonDynamoDBClient _dynamoClient = new AmazonDynamoDBClient();
-        private static DynamoDBContext _dynamoContext = new DynamoDBContext(_dynamoClient);
+        private static DynamoDBContext _context = new DynamoDBContext(new AmazonDynamoDBClient());
         private static Random _random = new Random();
 
         private const string PrivateABlock = "10.0.0.0/8";
+        private const string VpcTableName = "VpcNetworkRanges";
+        private const string SubnetTableName = "SubnetNetworkRanges";
+        private const string IndexName = "VpcName-IX";
 
         public async Task<CustomResourceResponse> FunctionHandler(CustomResourceRequest request, ILambdaContext context)
         {
@@ -31,30 +34,37 @@ namespace NetworkRangeManager
                 LogicalResourceId = request.LogicalResourceId
             };
 
-            var type = request.ResourceProperties.NetworkType;
-            var vpcName = request.ResourceProperties.VpcName;
-            var parentRange = string.IsNullOrWhiteSpace(request.ResourceProperties.ParentRange) ? PrivateABlock : request.ResourceProperties.ParentRange;
-            var cidr = request.ResourceProperties.Cidr;
-            var tableName = type == NetworkType.Vpc ? "VpcNetworkRanges" : "SubnetNetworkRanges";
-
             try
             {
-                context.Logger.LogLine($"Received '{request.RequestType}' request for vpc '{vpcName}' and block address {parentRange} - {cidr}");
+                var vpcName = request.ResourceProperties.VpcName;
+                context.Logger.LogLine($"Received '{request.RequestType}' request for vpc '{vpcName}'");
 
                 if (request.RequestType == "Create")
                 {
-                    var addressRange = await InternalGetRange(parentRange, cidr, tableName, vpcName);
-                    if (string.IsNullOrWhiteSpace(addressRange))
+                    response.PhysicalResourceId = GenerateRandomString();
+
+                    var vpcAddressRange = await InternalGetRange(PrivateABlock, request.ResourceProperties.VpcCidr, VpcTableName, vpcName);
+                    if (string.IsNullOrWhiteSpace(vpcAddressRange))
                     {
-                        throw new Exception("No available addresses for parameters specified");
+                        throw new Exception("No available addresses for VPC cidr");
                     }
 
-                    response.PhysicalResourceId = GenerateRandomString();
-                    response.Data = new ResponseData { AddressRange = addressRange };
-                }
-                else if (request.RequestType == "Delete")
-                {
-                    await DeleteRangeAsync(new NetworkRange { AddressRange = parentRange, VpcName = vpcName }, tableName);
+                    response.Data = new ResponseData 
+                    { 
+                        VpcAddressRange = vpcAddressRange,
+                        SubnetsAddressRanges = new List<string>()
+                    };
+
+                    foreach (var subnetCidr in request.ResourceProperties.SubnetCidrs)
+                    {
+                        var subnetAddressRange = await InternalGetRange(vpcAddressRange, subnetCidr, SubnetTableName, vpcName);
+                        if (string.IsNullOrWhiteSpace(subnetAddressRange))
+                        {
+                            throw new Exception("No available addresses for subnets in this VPC");
+                        }
+
+                        response.Data.SubnetsAddressRanges.Add(subnetAddressRange);
+                    }
                 }
 
                 response.Status = "SUCCESS";
@@ -62,6 +72,7 @@ namespace NetworkRangeManager
             catch (Exception exception)
             {
                 response.Reason = exception.Message;
+                response.Data = null;
                 context.Logger.LogLine(exception.ToString());
             }
 
@@ -74,7 +85,7 @@ namespace NetworkRangeManager
         /// </summary>
         private async Task<string> InternalGetRange(string addressBlock, byte cidr, string tableName, string vpcName)
         {
-            if (cidr < 16 || cidr > 28) throw new ArgumentOutOfRangeException(nameof(cidr));
+            if (cidr < 16 || cidr > 28) throw new ArgumentOutOfRangeException(nameof(cidr), "Cidr must be between /16 and /28");
 
             var network = IPNetwork.Parse(addressBlock);
             var subnets = network.Subnet(cidr);
@@ -84,11 +95,13 @@ namespace NetworkRangeManager
             NetworkRange networkRange = null;
             var count = 0;
 
+            var search = _context.QueryAsync<NetworkRange>(vpcName, new DynamoDBOperationConfig { OverrideTableName = tableName, IndexName = IndexName });
+            var storedRanges = await search.GetRemainingAsync();
+
             do
             {
                 count++;
-                var index = _random.Next(numberOfPossibleSubnets);
-                var possibleSubnet = subnets[index];
+                var possibleSubnet = subnets[_random.Next(numberOfPossibleSubnets)];
 
                 networkRange = new NetworkRange
                 {
@@ -96,7 +109,7 @@ namespace NetworkRangeManager
                     VpcName = vpcName
                 };
 
-                if (await CanUseRangeAsync(networkRange, tableName))
+                if (CanUseRange(storedRanges, possibleSubnet))
                 {
                     validSubnet = possibleSubnet;
                 }
@@ -107,21 +120,16 @@ namespace NetworkRangeManager
                 return string.Empty;
             }
 
-            await _dynamoContext.SaveAsync(networkRange, new DynamoDBOperationConfig { OverrideTableName = tableName });
+            await _context.SaveAsync(networkRange, new DynamoDBOperationConfig { OverrideTableName = tableName });
 
             return networkRange.AddressRange;
         }
 
-        static async Task<bool> CanUseRangeAsync(NetworkRange range, string tableName)
+        static bool CanUseRange(IEnumerable<NetworkRange> storedRanges, IPNetwork network)
         {
-            var storedRange = await _dynamoContext.LoadAsync(range, new DynamoDBOperationConfig { OverrideTableName = tableName });
-
-            return storedRange == null;
-        }
-
-        static async Task DeleteRangeAsync(NetworkRange range, string tableName)
-        {
-            await _dynamoContext.DeleteAsync(range, new DynamoDBOperationConfig { OverrideTableName = tableName });
+            return
+                storedRanges.All(x => x.AddressRange != network.ToString()) &&
+                !storedRanges.Any(x => IPNetwork.Parse(x.AddressRange).Overlap(network));
         }
 
         static string GenerateRandomString(int length = 24)
