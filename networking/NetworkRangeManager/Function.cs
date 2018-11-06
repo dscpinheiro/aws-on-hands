@@ -37,17 +37,13 @@ namespace NetworkRangeManager
             try
             {
                 var vpcName = request.ResourceProperties.VpcName;
-                context.Logger.LogLine($"Received '{request.RequestType}' request for vpc '{vpcName}'");
+                context.Logger.LogLine($"Received '{request.RequestType}' request for VPC '{vpcName}'");
 
                 if (request.RequestType == "Create")
                 {
                     response.PhysicalResourceId = GenerateRandomString();
 
                     var vpcAddressRange = await InternalGetRange(PrivateABlock, request.ResourceProperties.VpcCidr, VpcTableName, vpcName);
-                    if (string.IsNullOrWhiteSpace(vpcAddressRange))
-                    {
-                        throw new Exception("No available addresses for VPC cidr");
-                    }
 
                     response.Data = new ResponseData 
                     { 
@@ -58,13 +54,15 @@ namespace NetworkRangeManager
                     foreach (var subnetCidr in request.ResourceProperties.SubnetCidrs)
                     {
                         var subnetAddressRange = await InternalGetRange(vpcAddressRange, subnetCidr, SubnetTableName, vpcName);
-                        if (string.IsNullOrWhiteSpace(subnetAddressRange))
-                        {
-                            throw new Exception("No available addresses for subnets in this VPC");
-                        }
-
                         response.Data.SubnetsAddressRanges.Add(subnetAddressRange);
                     }
+                }
+                else if (request.RequestType == "Delete")
+                {
+                    await Task.WhenAll(
+                        InternalDeleteRanges(vpcName, VpcTableName),
+                        InternalDeleteRanges(vpcName, SubnetTableName)
+                    );
                 }
 
                 response.Status = "SUCCESS";
@@ -80,8 +78,7 @@ namespace NetworkRangeManager
         }
 
         /// <summary>
-        /// Calculates all possible subnets in (<paramref name="addressBlock"/>/<paramref name="cidr"/>) and returns one
-        /// not being used at the moment (that is, not present in the <paramref name="tableName"/>).
+        /// Calculates all possible subnets in the (address block + cidr) and returns one not being used at the moment.
         /// </summary>
         private async Task<string> InternalGetRange(string addressBlock, byte cidr, string tableName, string vpcName)
         {
@@ -95,8 +92,7 @@ namespace NetworkRangeManager
             NetworkRange networkRange = null;
             var count = 0;
 
-            var search = _context.QueryAsync<NetworkRange>(vpcName, new DynamoDBOperationConfig { OverrideTableName = tableName, IndexName = IndexName });
-            var storedRanges = await search.GetRemainingAsync();
+            var storedRanges = await GetRangesForVpc(vpcName, tableName);
 
             do
             {
@@ -117,7 +113,7 @@ namespace NetworkRangeManager
 
             if (validSubnet == null)
             {
-                return string.Empty;
+                throw new Exception("No available ranges for this address block");
             }
 
             await _context.SaveAsync(networkRange, new DynamoDBOperationConfig { OverrideTableName = tableName });
@@ -125,6 +121,34 @@ namespace NetworkRangeManager
             return networkRange.AddressRange;
         }
 
+        /// <summary>
+        /// Deletes all ranges associated with a VPC in the specified table.
+        /// </summary>
+        static async Task InternalDeleteRanges(string vpcName, string tableName)
+        {
+            var storedRanges = await GetRangesForVpc(vpcName, tableName);
+            foreach (var range in storedRanges)
+            {
+                await _context.DeleteAsync(range, new DynamoDBOperationConfig { OverrideTableName = tableName });
+            }
+        }
+
+        /// <summary>
+        /// Gets all ranges associated with a VPC in the specified table.
+        /// </summary>
+        static async Task<IEnumerable<NetworkRange>> GetRangesForVpc(string vpcName, string tableName)
+        {
+            var search = _context.QueryAsync<NetworkRange>(vpcName, new DynamoDBOperationConfig { OverrideTableName = tableName, IndexName = IndexName });
+            var storedRanges = await search.GetRemainingAsync();
+
+            return storedRanges;
+        }
+
+        /// <summary>
+        /// Checks whether the specified network can be used. The following validations are performed: <para />
+        /// - Address block not currently used. <para />
+        /// - Address block does not overlap with any existing ones.
+        /// </summary>
         static bool CanUseRange(IEnumerable<NetworkRange> storedRanges, IPNetwork network)
         {
             return
@@ -132,6 +156,9 @@ namespace NetworkRangeManager
                 !storedRanges.Any(x => IPNetwork.Parse(x.AddressRange).Overlap(network));
         }
 
+        /// <summary>
+        /// Generates a random string to be used as the physical resource id.
+        /// </summary>
         static string GenerateRandomString(int length = 24)
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
