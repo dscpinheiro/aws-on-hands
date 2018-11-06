@@ -26,13 +26,13 @@ namespace NetworkRangeManager
             var addressRange = string.Empty;
             var reason = string.Empty;
 
+            var type = request.ResourceProperties.NetworkType;
+            var vpcName = request.ResourceProperties.VpcName;
+            var vpcRange = request.ResourceProperties.VpcRange;
+            var cidr = request.ResourceProperties.Cidr;
+
             try
             {
-                var type = request.ResourceProperties.NetworkType;
-                var vpcName = request.ResourceProperties.VpcName;
-                var vpcRange = request.ResourceProperties.VpcRange;
-                var cidr = request.ResourceProperties.Cidr;
-
                 if (request.RequestType == "Create")
                 {
                     context.Logger.LogLine($"Received {type} request for vpc '{vpcName}' with cidr /{cidr}");
@@ -56,6 +56,7 @@ namespace NetworkRangeManager
             {
                 Status = status,
                 Reason = reason,
+                PhysicalResourceId = new { vpcName, addressRange }.GetHashCode().ToString(),
                 StackId = request.StackId,
                 RequestId = request.RequestId,
                 LogicalResourceId = request.LogicalResourceId,
