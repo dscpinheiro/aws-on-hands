@@ -2,11 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.DataModel;
 using Amazon.DynamoDBv2.DocumentModel;
 using Amazon.Lambda.Core;
+using Newtonsoft.Json;
 
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.Json.JsonSerializer))]
@@ -17,6 +20,7 @@ namespace NetworkRangeManager
     {
         private static DynamoDBContext _context = new DynamoDBContext(new AmazonDynamoDBClient());
         private static Random _random = new Random();
+        private static HttpClient _httpClient = new HttpClient();
 
         private const string PrivateABlock = "10.0.0.0/8";
         private const string VpcTableName = "VpcNetworkRanges";
@@ -80,6 +84,8 @@ namespace NetworkRangeManager
 
             context.Logger.LogLine($"Returning status: {response.Status}");
 
+            await SendResponse(request.ResponseURL, response);
+
             return response;
         }
 
@@ -130,7 +136,7 @@ namespace NetworkRangeManager
         /// <summary>
         /// Deletes all ranges associated with a VPC in the specified table.
         /// </summary>
-        static async Task InternalDeleteRanges(string vpcName, string tableName)
+        private async Task InternalDeleteRanges(string vpcName, string tableName)
         {
             var storedRanges = await GetRangesForVpc(vpcName, tableName);
             foreach (var range in storedRanges)
@@ -142,7 +148,7 @@ namespace NetworkRangeManager
         /// <summary>
         /// Gets all ranges associated with a VPC in the specified table.
         /// </summary>
-        static async Task<IEnumerable<NetworkRange>> GetRangesForVpc(string vpcName, string tableName)
+        private async Task<IEnumerable<NetworkRange>> GetRangesForVpc(string vpcName, string tableName)
         {
             var search = _context.QueryAsync<NetworkRange>(vpcName, new DynamoDBOperationConfig { OverrideTableName = tableName, IndexName = IndexName });
             var storedRanges = await search.GetRemainingAsync();
@@ -155,7 +161,7 @@ namespace NetworkRangeManager
         /// - Address block not currently used. <para />
         /// - Address block does not overlap with any existing ones.
         /// </summary>
-        static bool CanUseRange(IEnumerable<NetworkRange> storedRanges, IPNetwork network)
+        private bool CanUseRange(IEnumerable<NetworkRange> storedRanges, IPNetwork network)
         {
             return
                 storedRanges.All(x => x.AddressRange != network.ToString()) &&
@@ -165,10 +171,23 @@ namespace NetworkRangeManager
         /// <summary>
         /// Generates a random string to be used as the physical resource id.
         /// </summary>
-        static string GenerateRandomString(int length = 24)
+        private static string GenerateRandomString(int length = 24)
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             return new string(Enumerable.Repeat(chars, length).Select(s => s[_random.Next(s.Length)]).ToArray());
+        }
+
+        /// <summary>
+        /// Sends the response to the pre-signed Amazon S3 URL.
+        /// </summary>
+        private async Task SendResponse(string s3Url, CustomResourceResponse response)
+        {
+            var message = new HttpRequestMessage(HttpMethod.Put, s3Url)
+            {
+                Content = new StringContent(JsonConvert.SerializeObject(response), Encoding.UTF8, "application/json")
+            };
+
+            await _httpClient.SendAsync(message);
         }
     }
 }
