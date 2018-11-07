@@ -34,6 +34,8 @@ namespace NetworkRangeManager
                 LogicalResourceId = request.LogicalResourceId
             };
 
+            context.Logger.LogLine($"Request id: {request.RequestId}; Stack: {request.StackId}");
+
             try
             {
                 var vpcName = request.ResourceProperties.VpcName;
@@ -44,6 +46,7 @@ namespace NetworkRangeManager
                     response.PhysicalResourceId = GenerateRandomString();
 
                     var vpcAddressRange = await InternalGetRange(PrivateABlock, request.ResourceProperties.VpcCidr, VpcTableName, vpcName);
+                    context.Logger.LogLine($"Associated {vpcAddressRange} to VPC '{vpcName}'");
 
                     response.Data = new ResponseData 
                     { 
@@ -55,6 +58,7 @@ namespace NetworkRangeManager
                     {
                         var subnetAddressRange = await InternalGetRange(vpcAddressRange, subnetCidr, SubnetTableName, vpcName);
                         response.Data.SubnetsAddressRanges.Add(subnetAddressRange);
+                        context.Logger.LogLine($"Associated {subnetAddressRange} to VPC '{vpcName}'");
                     }
                 }
                 else if (request.RequestType == "Delete")
@@ -73,6 +77,8 @@ namespace NetworkRangeManager
                 response.Data = null;
                 context.Logger.LogLine(exception.ToString());
             }
+
+            context.Logger.LogLine($"Returning status: {response.Status}");
 
             return response;
         }
