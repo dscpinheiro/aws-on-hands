@@ -21,13 +21,15 @@ namespace NetworkRangeManager
         private static Random _random = new Random();
         private static HttpClient _httpClient = new HttpClient();
 
-        private const string PrivateABlock = "10.0.0.0/8";
-        private const string VpcTableName = "VpcNetworkRanges";
-        private const string SubnetTableName = "SubnetNetworkRanges";
-        private const string IndexName = "VpcName-IX";
+        private const string PRIVATE_A_BLOCK = "10.0.0.0/8";
+        private const string VPC_TABLE_VARIABLE_NAME = "VPC_TABLE_NAME";
+        private const string SUBNET_TABLE_VARIABLE_NAME = "SUBNET_TABLE_NAME";
+        private const string INDEX_VARIABLE_NAME = "GSI_INDEX_NAME";
 
         public async Task<CustomResourceResponse> FunctionHandler(CustomResourceRequest request, ILambdaContext context)
         {
+            context.Logger.LogLine($"Request id: {request.RequestId}; Stack: {request.StackId}");
+
             var response = new CustomResourceResponse
             {
                 Status = "FAILED",
@@ -37,7 +39,8 @@ namespace NetworkRangeManager
                 LogicalResourceId = request.LogicalResourceId
             };
 
-            context.Logger.LogLine($"Request id: {request.RequestId}; Stack: {request.StackId}");
+            var vpcTableName = Environment.GetEnvironmentVariable(VPC_TABLE_VARIABLE_NAME);
+            var subnetTableName = Environment.GetEnvironmentVariable(SUBNET_TABLE_VARIABLE_NAME);
 
             try
             {
@@ -48,7 +51,7 @@ namespace NetworkRangeManager
                 {
                     response.PhysicalResourceId = GenerateRandomString();
 
-                    var vpcAddressRange = await InternalGetRange(PrivateABlock, request.ResourceProperties.VpcCidr, VpcTableName, vpcName);
+                    var vpcAddressRange = await InternalGetRange(PRIVATE_A_BLOCK, request.ResourceProperties.VpcCidr, vpcTableName, vpcName);
                     context.Logger.LogLine($"Associated {vpcAddressRange} to VPC '{vpcName}'");
 
                     response.Data = new ResponseData 
@@ -59,7 +62,7 @@ namespace NetworkRangeManager
 
                     foreach (var subnetCidr in request.ResourceProperties.SubnetCidrs)
                     {
-                        var subnetAddressRange = await InternalGetRange(vpcAddressRange, subnetCidr, SubnetTableName, vpcName);
+                        var subnetAddressRange = await InternalGetRange(vpcAddressRange, subnetCidr, subnetTableName, vpcName);
                         response.Data.SubnetsAddressRanges.Add(subnetAddressRange);
                         context.Logger.LogLine($"Associated {subnetAddressRange} to VPC '{vpcName}'");
                     }
@@ -67,8 +70,8 @@ namespace NetworkRangeManager
                 else if (request.RequestType == "Delete")
                 {
                     await Task.WhenAll(
-                        InternalDeleteRanges(vpcName, VpcTableName),
-                        InternalDeleteRanges(vpcName, SubnetTableName)
+                        InternalDeleteRanges(vpcName, vpcTableName),
+                        InternalDeleteRanges(vpcName, subnetTableName)
                     );
                 }
 
@@ -149,7 +152,8 @@ namespace NetworkRangeManager
         /// </summary>
         private async Task<IEnumerable<NetworkRange>> GetRangesForVpc(string vpcName, string tableName)
         {
-            var search = _context.QueryAsync<NetworkRange>(vpcName, new DynamoDBOperationConfig { OverrideTableName = tableName, IndexName = IndexName });
+            var indexName = Environment.GetEnvironmentVariable(INDEX_VARIABLE_NAME);
+            var search = _context.QueryAsync<NetworkRange>(vpcName, new DynamoDBOperationConfig { OverrideTableName = tableName, IndexName = indexName });
             var storedRanges = await search.GetRemainingAsync();
 
             return storedRanges;
