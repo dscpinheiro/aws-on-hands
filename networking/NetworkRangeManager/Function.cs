@@ -181,12 +181,11 @@ namespace NetworkRangeManager
         /// </summary>
         private async Task SendResponse(string s3Url, CustomResourceResponse response)
         {
-            var message = new HttpRequestMessage(HttpMethod.Put, s3Url)
+            using (var message = new HttpRequestMessage(HttpMethod.Put, s3Url))
             {
-                Content = new StringContent(JsonConvert.SerializeObject(response), Encoding.UTF8, "application/json")
-            };
-
-            await _httpClient.SendAsync(message);
+                message.Content = new StringContent(JsonConvert.SerializeObject(response), Encoding.UTF8, "application/json");
+                await _httpClient.SendAsync(message);
+            }
         }
     }
 }
