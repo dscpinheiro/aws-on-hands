@@ -28,8 +28,6 @@ namespace NetworkRangeManager
 
         public async Task<CustomResourceResponse> FunctionHandler(CustomResourceRequest request, ILambdaContext context)
         {
-            context.Logger.LogLine($"Request id: {request.RequestId}; Stack: {request.StackId}");
-
             var response = new CustomResourceResponse
             {
                 Status = "FAILED",
@@ -84,9 +82,10 @@ namespace NetworkRangeManager
                 context.Logger.LogLine(exception.ToString());
             }
 
-            context.Logger.LogLine($"Returning status: {response.Status}");
+            var serializedResponse = JsonConvert.SerializeObject(response);
+            context.Logger.LogLine($"Returning: {serializedResponse}");
 
-            await SendResponse(request.ResponseURL, response);
+            await SendResponse(request.ResponseURL, serializedResponse);
 
             return response;
         }
@@ -183,11 +182,11 @@ namespace NetworkRangeManager
         /// <summary>
         /// Sends the response to the pre-signed Amazon S3 URL.
         /// </summary>
-        private async Task SendResponse(string s3Url, CustomResourceResponse response)
+        private async Task SendResponse(string s3Url, string response)
         {
             using (var message = new HttpRequestMessage(HttpMethod.Put, s3Url))
             {
-                message.Content = new StringContent(JsonConvert.SerializeObject(response), Encoding.UTF8, "application/json");
+                message.Content = new StringContent(response, Encoding.UTF8, "application/json");
                 await _httpClient.SendAsync(message);
             }
         }
