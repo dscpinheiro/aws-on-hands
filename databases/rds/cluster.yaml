@@ -29,9 +29,9 @@ Resources:
       DBClusterIdentifier: my-cloudformation-cluster
       DBClusterParameterGroupName: !Ref MyClusterParameterGroup
       DBSubnetGroupName: !Ref MySubnetGroup
-      Engine: aurora-postgresql
+      Engine: aurora-mysql
       EngineMode: provisioned
-      EngineVersion: 9.6.9
+      EngineVersion: 5.7.12
       MasterUsername: !Ref MasterUsername
       MasterUserPassword: !Ref MasterUserPassword
       Port: 3306
@@ -48,7 +48,7 @@ Resources:
       DBClusterIdentifier: !Ref MyCluster
       DBInstanceClass: !Ref DbInstanceClass
       DBInstanceIdentifier: my-cloudformation-writer
-      Engine: aurora-postgresql
+      Engine: aurora-mysql
   MyReaderInstance:
     Type: AWS::RDS::DBInstance
     Properties:
@@ -59,7 +59,7 @@ Resources:
       DBClusterIdentifier: !Ref MyCluster
       DBInstanceClass: !Ref DbInstanceClass
       DBInstanceIdentifier: my-cloudformation-reader
-      Engine: aurora-postgresql
+      Engine: aurora-mysql
 
   MySubnetGroup:
     Type: AWS::RDS::DBSubnetGroup
@@ -70,14 +70,14 @@ Resources:
     Type: AWS::RDS::DBClusterParameterGroup
     Properties:
       Description: CloudFormation Sample Aurora Cluster Parameter Group
-      Family: aurora-postgresql9.6
+      Family: aurora-mysql5.7
       Parameters:
         rds.force_ssl: 1
   MyDbParameterGroup:
     Type: AWS::RDS::DBParameterGroup
     Properties:
       Description: CloudFormation Sample Aurora Parameter Group
-      Family: aurora-postgresql9.6
+      Family: aurora-mysql5.7
       Parameters:
         log_statement: all
 
