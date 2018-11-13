@@ -9,7 +9,7 @@ Parameters:
   AmiId:
     Description: AMI id to use for this instance
     Type: AWS::EC2::Image::Id
-    Default: ami-6cd6f714
+    Default: ami-061e7ebbc234015fe
   KeyPair:
     Description: Key pair to connect to this instance
     Type: AWS::EC2::KeyPair::KeyName

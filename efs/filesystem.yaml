@@ -59,7 +59,7 @@ Resources:
     Type: AWS::EC2::Instance
     DependsOn: MyMountTarget1
     Properties:
-      ImageId: ami-6cd6f714
+      ImageId: ami-061e7ebbc234015fe
       KeyName: !Ref KeyPair
       InstanceType: t3.micro
       SubnetId: !Ref SubnetId

@@ -18,7 +18,7 @@ Parameters:
   AmiId:
     Description: AMI id to use for this ASG
     Type: AWS::EC2::Image::Id
-    Default: ami-6cd6f714
+    Default: ami-061e7ebbc234015fe
   KeyPair:
     Description: Key pair to connect to the instances in the ASG
     Type: AWS::EC2::KeyPair::KeyName

@@ -79,7 +79,7 @@ Resources:
     Type: AWS::EC2::Instance
     Properties:
       AvailabilityZone: !Ref AvailabilityZone
-      ImageId: ami-6cd6f714
+      ImageId: ami-061e7ebbc234015fe
       KeyName: !Ref KeyPair
       InstanceType: t3.micro
       IamInstanceProfile: !Ref InstanceProfile
