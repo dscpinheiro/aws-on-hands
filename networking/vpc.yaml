@@ -267,6 +267,46 @@ Resources:
         - Key: Name
           Value: !Sub "${Environment}-endpoint-sg"
 
+  VpcFlowLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties: 
+      LogGroupName: !Sub "${Environment}-vpc-flow-log-group"
+      RetentionInDays: 30
+  VpcFlowLogRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - vpc-flow-logs.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Policies: 
+        - PolicyName: VpcFlowLogPolicy
+          PolicyDocument: 
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                  - logs:DescribeLogGroups
+                  - logs:DescribeLogStreams
+                Resource: "*"
+  VpcFlowLog:
+    Type: AWS::EC2::FlowLog
+    Properties:
+      DeliverLogsPermissionArn: !Ref VpcFlowLogRole
+      LogDestinationType: cloud-watch-logs
+      LogDestination: !GetAtt VpcFlowLogGroup.Arn
+      ResourceId: !Ref MyVpc
+      ResourceType: VPC
+      TrafficType: ALL
+
 Outputs:
   VpcId:
     Value: !Ref MyVpc
