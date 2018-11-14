@@ -301,8 +301,7 @@ Resources:
     Type: AWS::EC2::FlowLog
     Properties:
       DeliverLogsPermissionArn: !GetAtt VpcFlowLogRole.Arn
-      LogDestinationType: cloud-watch-logs
-      LogDestination: !GetAtt VpcFlowLogGroup.Arn
+      LogGroupName: !Ref VpcFlowLogGroup
       ResourceId: !Ref MyVpc
       ResourceType: VPC
       TrafficType: ALL
