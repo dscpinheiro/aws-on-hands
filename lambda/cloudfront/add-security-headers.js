@@ -31,7 +31,7 @@ exports.handler = (event, context, callback) => {
 
     headers['content-security-policy'] = [{
         key: 'Content-Security-Policy', 
-        value: "default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self'; font-src 'self' https://cdn.joinhoney.com/fonts/icons/; object-src 'self'; frame-ancestors 'none'; form-action 'none'; base-uri 'self'; report-uri https://my.report-uri.com/r/d/csp/enforce;"
+        value: "default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self'; font-src 'self'; object-src 'self'; frame-ancestors 'none'; form-action 'none'; base-uri 'self'; report-uri https://my.report-uri.com/r/d/csp/enforce;"
     }];
 
     callback(null, response);
