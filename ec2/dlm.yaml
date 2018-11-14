@@ -1,0 +1,43 @@
+Resources:
+  LifecycleManagerRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - dlm.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      ManagedPolicyArns: 
+        - arn:aws:iam::aws:policy/service-role/AWSDataLifecycleManagerServiceRole
+
+  MyDailyPolicy:
+    Type: AWS::DLM::LifecyclePolicy
+    Properties:
+      Description: My daily snapshot policy
+      ExecutionRoleArn: !GetAtt LifecycleManagerRole.Arn
+      State: ENABLED
+      PolicyDetails:
+        ResourceTypes: [VOLUME]
+        Schedules:
+          - Name: Daily snapshot
+            CopyTags: true
+            TagsToAdd:
+              - Key: type
+                Value: daily-snapshot
+            RetainRule:
+              Count: 10
+            CreateRule:
+              Interval: 24
+              IntervalUnit: HOURS
+              Times: ["22:00"]
+        TargetTags:
+          - Key: owner
+            Value: dev
+
+Outputs:
+  PolicyId:
+    Value: !Ref MyDailyPolicy
