@@ -6,6 +6,7 @@ Metadata:
         Parameters: 
           - VpcId
           - KeyPair
+          - AmiId
           - SSHLocation
       - Label: 
           default: "Volume Configuration"
@@ -26,6 +27,9 @@ Parameters:
   KeyPair:
     Description: Key pair to connect to the instance
     Type: AWS::EC2::KeyPair::KeyName
+  AmiId:
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
   SSHLocation:
     Description: Ip address allowed to SSH into the instance
     Type: String
@@ -79,7 +83,7 @@ Resources:
     Type: AWS::EC2::Instance
     Properties:
       AvailabilityZone: !Ref AvailabilityZone
-      ImageId: ami-061e7ebbc234015fe
+      ImageId: !Ref AmiId
       KeyName: !Ref KeyPair
       InstanceType: t3.micro
       IamInstanceProfile: !Ref InstanceProfile

@@ -5,6 +5,9 @@ Parameters:
     Type: AWS::EC2::Subnet::Id
   KeyPair:
     Type: AWS::EC2::KeyPair::KeyName
+  AmiId:
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
   SSHLocation:
     Type: String
     MinLength: 9
@@ -59,7 +62,7 @@ Resources:
     Type: AWS::EC2::Instance
     DependsOn: MyMountTarget1
     Properties:
-      ImageId: ami-061e7ebbc234015fe
+      ImageId: !Ref AmiId
       KeyName: !Ref KeyPair
       InstanceType: t3.micro
       SubnetId: !Ref SubnetId

@@ -16,8 +16,8 @@ Parameters:
       - t3.large
   AmiId:
     Description: AMI id to use for this instance
-    Type: AWS::EC2::Image::Id
-    Default: ami-061e7ebbc234015fe
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
   KeyPair:
     Description: Key pair to connect to this instance
     Type: AWS::EC2::KeyPair::KeyName
