@@ -3,7 +3,7 @@ Description: Task definition based on https://github.com/aws-samples/ecs-refarch
 Parameters:
   VPC:
     Description: The VPC that the ECS cluster is deployed to
-    Type: AWS::EC2::VPC::Id  
+    Type: AWS::EC2::VPC::Id
   Cluster:
     Description: ECS Cluster ID that this service should run on
     Type: String
@@ -17,9 +17,9 @@ Parameters:
 Resources:
   CloudWatchLogsGroup:
     Type: AWS::Logs::LogGroup
-    Properties: 
+    Properties:
       LogGroupName: !Ref AWS::StackName
-      RetentionInDays: 365 
+      RetentionInDays: 365
 
   MyTaskDef:
     Type: AWS::ECS::TaskDefinition
@@ -60,7 +60,7 @@ Resources:
       VpcId: !Ref VPC
       Port: 80
       Protocol: HTTP
-      Matcher: 
+      Matcher:
         HttpCode: 200-299
       HealthCheckIntervalSeconds: 10
       HealthCheckPath: /hc
@@ -74,15 +74,15 @@ Resources:
       Priority: 2
       Conditions:
         - Field: path-pattern
-          Values: 
+          Values:
             - /api/products*
       Actions:
         - TargetGroupArn: !Ref TargetGroup
           Type: forward
 
-  ServiceRole: 
+  ServiceRole:
     Type: AWS::IAM::Role
-    Properties: 
+    Properties:
       RoleName: !Sub ecs-service-${AWS::StackName}
       Path: /
       AssumeRolePolicyDocument: |
@@ -93,7 +93,7 @@ Resources:
             "Action": [ "sts:AssumeRole" ]
           }]
         }
-      Policies: 
+      Policies:
         - PolicyName: !Sub ecs-service-${AWS::StackName}
           PolicyDocument: |
             {

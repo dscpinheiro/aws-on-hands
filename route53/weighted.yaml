@@ -24,7 +24,7 @@ Resources:
       Tags:
         - Key: Name
           Value: CF-WebServer1-R53
-      UserData: 
+      UserData:
         Fn::Base64: |
           #!/bin/bash -xe
           yum -y install httpd
@@ -41,7 +41,7 @@ Resources:
       Tags:
         - Key: Name
           Value: CF-WebServer2-R53
-      UserData: 
+      UserData:
         Fn::Base64: |
           #!/bin/bash -xe
           yum -y install httpd

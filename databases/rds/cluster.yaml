@@ -84,9 +84,9 @@ Resources:
   EventsTopic:
     Type: AWS::SNS::Topic
     Properties:
-      DisplayName: Topic for RDS events 
+      DisplayName: Topic for RDS events
       TopicName: RdsEventsTopic
-      Subscription: 
+      Subscription:
         - Endpoint: !Ref Email
           Protocol: email
   EventSubscription:

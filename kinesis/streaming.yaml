@@ -70,13 +70,13 @@ Resources:
 
   LogGroup:
     Type: AWS::Logs::LogGroup
-    Properties: 
+    Properties:
       LogGroupName: delivery-log-group
       RetentionInDays: 7
-  LogStream: 
+  LogStream:
     Type: AWS::Logs::LogStream
     DependsOn: LogGroup
-    Properties: 
+    Properties:
       LogGroupName: delivery-log-group
       LogStreamName: s3-delivery
 

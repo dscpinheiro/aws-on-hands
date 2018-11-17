@@ -6,9 +6,9 @@ Parameters:
     Type: List<AWS::EC2::Subnet::Id>
 
 Resources:
-  MySubnetGroup: 
+  MySubnetGroup:
     Type: AWS::ElastiCache::SubnetGroup
-    Properties: 
+    Properties:
       CacheSubnetGroupName: MySubnetGroup
       Description: Redis Subnet Group
       SubnetIds: !Ref Subnets
@@ -31,7 +31,7 @@ Resources:
       NumCacheNodes: 1
       VpcSecurityGroupIds:
         - !Ref DefaultSecurityGroupId
-  MyReplicationGroup: 
+  MyReplicationGroup:
     Type: AWS::ElastiCache::ReplicationGroup
     Properties:
       PrimaryClusterId: !Ref MyCluster

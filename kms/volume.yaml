@@ -1,16 +1,16 @@
-Metadata: 
-  AWS::CloudFormation::Interface: 
-    ParameterGroups: 
-      - Label: 
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
           default: "Instance Configuration"
-        Parameters: 
+        Parameters:
           - VpcId
           - KeyPair
           - AmiId
           - SSHLocation
-      - Label: 
+      - Label:
           default: "Volume Configuration"
-        Parameters: 
+        Parameters:
           - AvailabilityZone
           - KmsKeyId
 
@@ -55,26 +55,26 @@ Resources:
     Type: AWS::IAM::InstanceProfile
     Properties:
       Roles: [!Ref InstanceRole]
-  
+
   InstanceRole:
     Type: AWS::IAM::Role
     Properties:
-      AssumeRolePolicyDocument: 
+      AssumeRolePolicyDocument:
         Version: "2012-10-17"
-        Statement: 
+        Statement:
           - Effect: Allow
-            Principal: 
-              Service: 
+            Principal:
+              Service:
                 - ec2.amazonaws.com
-            Action: 
+            Action:
               - sts:AssumeRole
-      Policies: 
+      Policies:
         - PolicyName: KmsEncryptDecrypt
-          PolicyDocument: 
+          PolicyDocument:
             Version: "2012-10-17"
-            Statement: 
+            Statement:
               - Effect: Allow
-                Action: 
+                Action:
                   - kms:Encrypt
                   - kms:Decrypt
                 Resource: !Ref KmsKeyId

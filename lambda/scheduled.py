@@ -10,5 +10,5 @@ def lambda_handler(event, context):
         Message=json.dumps(event),
         Subject="notification from lambda + sns"
     )
-    
+
     return response

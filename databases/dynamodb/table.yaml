@@ -2,17 +2,17 @@ Resources:
   MyTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      AttributeDefinitions: 
+      AttributeDefinitions:
         - AttributeName: Album
           AttributeType: S
         - AttributeName: Artist
           AttributeType: S
-      KeySchema: 
+      KeySchema:
         - AttributeName: Album
           KeyType: HASH
         - AttributeName: Artist
           KeyType: RANGE
-      ProvisionedThroughput: 
+      ProvisionedThroughput:
         ReadCapacityUnits: 5
         WriteCapacityUnits: 5
       TableName: AlbumSales

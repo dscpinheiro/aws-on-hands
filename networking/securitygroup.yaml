@@ -11,7 +11,7 @@ Resources:
   SecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      VpcId: 
+      VpcId:
         Fn::ImportValue: !Sub "${Environment}-VpcId"
       GroupDescription: Enable access via HTTP and HTTPS
       SecurityGroupIngress:

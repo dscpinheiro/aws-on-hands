@@ -5,14 +5,14 @@ Resources:
       RepositoryName: sample-repository
       LifecyclePolicy:
         LifecyclePolicyText: '{ "rules": [{ "rulePriority": 1, "description": "Expire images older than 14 days", "selection": { "tagStatus": "untagged", "countType": "sinceImagePushed", "countUnit": "days", "countNumber": 14 }, "action": { "type": "expire" } }] }'
-      RepositoryPolicyText: 
+      RepositoryPolicyText:
         Version: "2012-10-17"
-        Statement: 
+        Statement:
           - Effect: Allow
-            Principal: 
-              AWS: 
+            Principal:
+              AWS:
                 - !Join ["", ["arn:aws:iam::", !Ref "AWS::AccountId", ":user/bob"]]
-            Action: 
+            Action:
               - "ecr:GetDownloadUrlForLayer"
               - "ecr:BatchGetImage"
               - "ecr:BatchCheckLayerAvailability"

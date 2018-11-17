@@ -11,7 +11,7 @@ Resources:
                 - dlm.amazonaws.com
             Action:
               - sts:AssumeRole
-      ManagedPolicyArns: 
+      ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSDataLifecycleManagerServiceRole
 
   MyDailyPolicy:

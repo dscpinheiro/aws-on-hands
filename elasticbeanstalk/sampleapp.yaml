@@ -3,7 +3,7 @@ Resources:
     Type: AWS::ElasticBeanstalk::Application
     Properties:
       Description: AWS Elastic Beanstalk Sample Application
-  
+
   MyApplicationVersion:
     Type: AWS::ElasticBeanstalk::ApplicationVersion
     Properties:

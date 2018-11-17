@@ -20,11 +20,11 @@ Resources:
       ApplicationName: !Ref ApplicationName
       ComputePlatform: Server
 
-  MyDeploymentConfig: 
+  MyDeploymentConfig:
     Type: AWS::CodeDeploy::DeploymentConfig
     Properties:
       DeploymentConfigName: !Join ["-", [!Ref ApplicationName, "DeploymentConfig"]]
-      MinimumHealthyHosts: 
+      MinimumHealthyHosts:
         Type: !Ref MinHealthyHostsType
         Value: !Ref MinHealthyHostsValue
 

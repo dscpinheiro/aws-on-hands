@@ -8,21 +8,21 @@ Resources:
     Type: AWS::S3::Bucket
     DeletionPolicy: Retain
 
-  MyCluster: 
+  MyCluster:
     Type: AWS::EMR::Cluster
     Properties:
       Applications:
         - Name: Spark
       EbsRootVolumeSize: 20
       LogUri: !Join ["", ["s3://", !Ref MyLoggingS3Bucket, "elasticmapreduce/"]]
-      Instances: 
+      Instances:
         Ec2KeyName: !Ref KeyPair
-        MasterInstanceGroup: 
+        MasterInstanceGroup:
           InstanceCount: 1
           InstanceType: m3.xlarge
           Market: ON_DEMAND
           Name: Master
-        CoreInstanceGroup: 
+        CoreInstanceGroup:
           InstanceCount: 2
           InstanceType: m3.xlarge
           Market: ON_DEMAND

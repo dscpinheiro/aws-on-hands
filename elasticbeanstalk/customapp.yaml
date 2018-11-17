@@ -23,14 +23,14 @@ Parameters:
     Description: Email to send notifications for this environment
     Type: String
 
-Mappings: 
+Mappings:
   # https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-access-logs.html#access-logging-bucket-permissions
-  ELBAccountIdMap: 
+  ELBAccountIdMap:
     us-east-1:
       Id: 127311923021
     eu-west-1:
       Id: 156460612806
-    us-west-2: 
+    us-west-2:
       Id: 797873946194
 
 Resources:
@@ -71,7 +71,7 @@ Resources:
       Tier:
         Name: WebServer
         Type: Standard
-      
+
       # https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/command-options-general.html
       OptionSettings:
         - Namespace: "aws:autoscaling:asg"

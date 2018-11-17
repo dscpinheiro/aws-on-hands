@@ -1,5 +1,5 @@
-Parameters: 
-  AlarmEmail: 
+Parameters:
+  AlarmEmail:
     Description: Email address to notify if operational problems arise
     Type: String
 
@@ -19,19 +19,19 @@ Resources:
     Properties:
       QueueName: MyDeadLetterQueue
 
-  AlarmTopic: 
+  AlarmTopic:
     Type: AWS::SNS::Topic
-    Properties: 
-      Subscription: 
+    Properties:
+      Subscription:
         - Endpoint: !Ref AlarmEmail
           Protocol: email
-  QueueDepthAlarm: 
+  QueueDepthAlarm:
     Type: AWS::CloudWatch::Alarm
-    Properties: 
+    Properties:
       AlarmDescription: Alarm if dead letter queue depth grows beyond 10 messages
       Namespace: "AWS/SQS"
       MetricName: ApproximateNumberOfMessagesVisible
-      Dimensions: 
+      Dimensions:
         - Name: QueueName
           Value: !GetAtt DeadLetterQueue.QueueName
       Statistic: Sum
@@ -39,9 +39,9 @@ Resources:
       EvaluationPeriods: 1
       Threshold: 10
       ComparisonOperator: GreaterThanThreshold
-      AlarmActions: 
+      AlarmActions:
         - !Ref AlarmTopic
-      InsufficientDataActions: 
+      InsufficientDataActions:
         - !Ref AlarmTopic
 
 Outputs:

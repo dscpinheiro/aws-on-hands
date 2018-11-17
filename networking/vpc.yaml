@@ -71,7 +71,7 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref MyVpc
-      AvailabilityZone: !Select 
+      AvailabilityZone: !Select
         - 0
         - Fn::GetAZs: !Ref "AWS::Region"
       CidrBlock: !Ref PublicSubnet1CIDR
@@ -83,7 +83,7 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref MyVpc
-      AvailabilityZone: !Select 
+      AvailabilityZone: !Select
         - 1
         - Fn::GetAZs: !Ref "AWS::Region"
       CidrBlock: !Ref PublicSubnet2CIDR
@@ -95,7 +95,7 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref MyVpc
-      AvailabilityZone: !Select 
+      AvailabilityZone: !Select
         - 0
         - Fn::GetAZs: !Ref "AWS::Region"
       CidrBlock: !Ref PrivateSubnet1CIDR
@@ -106,7 +106,7 @@ Resources:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref MyVpc
-      AvailabilityZone: !Select 
+      AvailabilityZone: !Select
         - 1
         - Fn::GetAZs: !Ref "AWS::Region"
       CidrBlock: !Ref PrivateSubnet2CIDR
@@ -269,7 +269,7 @@ Resources:
 
   VpcFlowLogGroup:
     Type: AWS::Logs::LogGroup
-    Properties: 
+    Properties:
       LogGroupName: !Sub "${Environment}-vpc-flow-log-group"
       RetentionInDays: 30
   VpcFlowLogRole:
@@ -284,9 +284,9 @@ Resources:
                 - vpc-flow-logs.amazonaws.com
             Action:
               - sts:AssumeRole
-      Policies: 
+      Policies:
         - PolicyName: VpcFlowLogPolicy
-          PolicyDocument: 
+          PolicyDocument:
             Version: "2012-10-17"
             Statement:
               - Effect: Allow

@@ -58,7 +58,7 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub "CF-${AWS::StackName}"
-      UserData: 
+      UserData:
         Fn::Base64: |
           #!/bin/bash -xe
           yum -y install httpd
