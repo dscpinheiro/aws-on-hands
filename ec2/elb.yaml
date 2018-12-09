@@ -144,6 +144,18 @@ Resources:
       DefaultActions:
         - Type: forward
           TargetGroupArn: !Ref ELBTargetGroup
+  ELBListenerRule:
+    Type: AWS::ElasticLoadBalancingV2::ListenerRule
+    Properties:
+      Actions:
+        - Type: forward
+          TargetGroupArn: !Ref ELBTargetGroup
+      Conditions:
+        - Field: path-pattern
+          Values:
+          - "*"
+      ListenerArn: !Ref ELBListener
+      Priority: 1
   ELBTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
@@ -160,9 +172,9 @@ Resources:
         - Key: stickiness.type
           Value: lb_cookie
         - Key: stickiness.lb_cookie.duration_seconds
-          Value: 30
+          Value: 60
         - Key: deregistration_delay.timeout_seconds
-          Value: 240
+          Value: 120
 
 Outputs:
   URL:
