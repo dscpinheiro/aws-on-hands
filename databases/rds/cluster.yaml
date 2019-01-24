@@ -22,6 +22,7 @@ Resources:
   MyCluster:
     Type: AWS::RDS::DBCluster
     DeletionPolicy: Delete
+    UpdateReplacePolicy: Snapshot
     Properties:
       AvailabilityZones: !GetAZs ""
       BackupRetentionPeriod: 10
@@ -40,6 +41,7 @@ Resources:
 
   MyWriterInstance:
     Type: AWS::RDS::DBInstance
+    UpdateReplacePolicy: Snapshot
     Properties:
       AllowMajorVersionUpgrade: false
       AutoMinorVersionUpgrade: true
@@ -51,6 +53,7 @@ Resources:
       Engine: aurora-mysql
   MyReaderInstance:
     Type: AWS::RDS::DBInstance
+    UpdateReplacePolicy: Snapshot
     Properties:
       AllowMajorVersionUpgrade: false
       AutoMinorVersionUpgrade: true
