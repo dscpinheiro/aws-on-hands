@@ -1,0 +1,34 @@
+Description: >
+  Creates a bucket for logging purposes.
+  It uses lifecyle rules to move files to cheaper storage, and has versioning and
+  encryption enabled.
+
+Resources:
+  LogBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      VersioningConfiguration:
+        Status: Enabled
+      LifecycleConfiguration:
+        Rules:
+        - Id: TransitionAndExpire
+          Status: Enabled
+          AbortIncompleteMultipartUpload:
+            DaysAfterInitiation: 7
+          NoncurrentVersionExpirationInDays: 45
+          Transitions:
+            - TransitionInDays: 30
+              StorageClass: STANDARD_IA
+            - TransitionInDays: 180
+              StorageClass: GLACIER
+    DeletionPolicy: Retain
+
+Outputs:
+  BucketName:
+    Value: !Ref LogBucket
+  BucketArn:
+    Value: !GetAtt LogBucket.Arn
