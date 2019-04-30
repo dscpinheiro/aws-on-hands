@@ -20,6 +20,7 @@ Resources:
           AbortIncompleteMultipartUpload:
             DaysAfterInitiation: 7
           NoncurrentVersionExpirationInDays: 45
+          ExpirationInDays: 1095
           Transitions:
             - TransitionInDays: 30
               StorageClass: STANDARD_IA
