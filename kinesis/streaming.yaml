@@ -83,7 +83,6 @@ Resources:
   MyDeliveryStream:
     Type: AWS::KinesisFirehose::DeliveryStream
     DependsOn:
-      - MyDeliveryRole
       - LogGroup
       - LogStream
     Properties:

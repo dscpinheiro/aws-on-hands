@@ -56,14 +56,14 @@ Resources:
       RecordSets:
         - Name: !Join ["", ["weighted", ., !Ref "HostedZoneName", .]]
           Type: A
-          TTL: 900
+          TTL: '900'
           SetIdentifier: Web Server 1
           Weight: 4
           ResourceRecords:
             - !GetAtt Ec2Instance1.PublicIp
         - Name: !Join ["", ["weighted", ., !Ref "HostedZoneName", .]]
           Type: A
-          TTL: 900
+          TTL: '900'
           SetIdentifier: Web Server 2
           Weight: 6
           ResourceRecords:

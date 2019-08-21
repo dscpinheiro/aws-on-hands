@@ -1,4 +1,7 @@
 Parameters:
+  VpcId:
+    Description: VPC this ASG will be launched into
+    Type: AWS::EC2::VPC::Id
   AutoScalingGroupName:
     Type: String
     MinLength: 1
@@ -63,7 +66,7 @@ Resources:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
       AutoScalingGroupName: !Ref AutoScalingGroupName
-      MinSize: 1
-      MaxSize: 3
+      MinSize: '1'
+      MaxSize: '3'
       VPCZoneIdentifier: !Ref Subnets
       LaunchConfigurationName: !Ref LaunchConfig

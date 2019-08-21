@@ -21,19 +21,19 @@ Resources:
       Schema:
         - Name: email
           StringAttributeConstraints:
-            MinLength: 3
-            MaxLength: 100
+            MinLength: '3'
+            MaxLength: '100'
           Required: true
         - Name: name
           Mutable: true
           StringAttributeConstraints:
-            MinLength: 3
-            MaxLength: 50
+            MinLength: '3'
+            MaxLength: '50'
           Required: true
         - Name: preferred_username
           StringAttributeConstraints:
-            MinLength: 3
-            MaxLength: 50
+            MinLength: '3'
+            MaxLength: '50'
           Required: true
       Policies:
         PasswordPolicy:

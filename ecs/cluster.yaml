@@ -39,7 +39,7 @@ Resources:
           FromPort: 22
           ToPort: 22
           CidrIp: !Ref SSHLocation
-        - IpProtocol: -1
+        - IpProtocol: '-1'
           SourceSecurityGroupId: !Ref LoadBalancerSecurityGroup
       Tags:
         - Key: Name
@@ -52,7 +52,7 @@ Resources:
       GroupDescription: Access to the load balancer that sits in front of ECS
       SecurityGroupIngress:
         - CidrIp: 0.0.0.0/0
-          IpProtocol: -1
+          IpProtocol: '-1'
       Tags:
         - Key: Name
           Value: !Sub ${EnvironmentName}-LoadBalancers
@@ -90,9 +90,9 @@ Resources:
     Properties:
       VPCZoneIdentifier: !Ref Subnets
       LaunchConfigurationName: !Ref ECSLaunchConfiguration
-      MinSize: 1
-      MaxSize: 4
-      DesiredCapacity: 2
+      MinSize: '1'
+      MaxSize: '4'
+      DesiredCapacity: '2'
       Tags:
         - Key: Name
           Value: !Sub ${EnvironmentName} ECS host

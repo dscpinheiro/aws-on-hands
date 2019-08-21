@@ -151,14 +151,12 @@ Resources:
           Value: !Sub "${Environment}-public-rt"
   PublicRouteIpv4:
     Type: AWS::EC2::Route
-    DependsOn: InternetGateway
     Properties:
       RouteTableId: !Ref PublicRouteTable
       DestinationCidrBlock: "0.0.0.0/0"
       GatewayId: !Ref InternetGateway
   PublicRouteIpv6:
     Type: AWS::EC2::Route
-    DependsOn: EgressOnlyInternetGateway
     Properties:
       RouteTableId: !Ref PublicRouteTable
       DestinationIpv6CidrBlock: "::/0"

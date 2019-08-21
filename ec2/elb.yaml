@@ -77,8 +77,8 @@ Resources:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
       AutoScalingGroupName: !Ref AutoScalingGroupName
-      MinSize: 2
-      MaxSize: 4
+      MinSize: '2'
+      MaxSize: '4'
       VPCZoneIdentifier: !Ref Subnets
       LaunchConfigurationName: !Ref LaunchConfig
       TargetGroupARNs: [!Ref ELBTargetGroup]
@@ -88,7 +88,7 @@ Resources:
     Properties:
       AdjustmentType: ChangeInCapacity
       AutoScalingGroupName: !Ref AutoScalingGroup
-      Cooldown: 60
+      Cooldown: '60'
       ScalingAdjustment: 1
   CPUAlarmHigh:
     Type: AWS::CloudWatch::Alarm
@@ -111,7 +111,7 @@ Resources:
     Properties:
       AdjustmentType: ChangeInCapacity
       AutoScalingGroupName: !Ref AutoScalingGroup
-      Cooldown: 60
+      Cooldown: '60'
       ScalingAdjustment: -1
   CPUAlarmLow:
     Type: AWS::CloudWatch::Alarm
@@ -168,13 +168,13 @@ Resources:
       VpcId: !Ref VpcId
       TargetGroupAttributes:
         - Key: stickiness.enabled
-          Value: true
+          Value: 'true'
         - Key: stickiness.type
           Value: lb_cookie
         - Key: stickiness.lb_cookie.duration_seconds
-          Value: 60
+          Value: '60'
         - Key: deregistration_delay.timeout_seconds
-          Value: 120
+          Value: '120'
 
 Outputs:
   URL:

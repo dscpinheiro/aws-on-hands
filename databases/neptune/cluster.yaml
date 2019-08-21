@@ -28,7 +28,6 @@ Resources:
       DBInstanceClass: db.r4.large
       DBInstanceIdentifier: my-neptune-instance
       DBSubnetGroupName: !Ref DbSubnetGroup
-      MultiAZ: true
 
 Outputs:
   ClusterEndpoint:

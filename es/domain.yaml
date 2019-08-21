@@ -18,7 +18,7 @@ Resources:
         InstanceCount: 2
         ZoneAwarenessEnabled: true
         InstanceType: m4.large.elasticsearch
-      ElasticsearchVersion: 6.0
+      ElasticsearchVersion: '6.0'
       EBSOptions:
         EBSEnabled: true
         Iops: 0
@@ -27,7 +27,7 @@ Resources:
       SnapshotOptions:
         AutomatedSnapshotStartHour: 3
       AdvancedOptions:
-        rest.action.multi.allow_explicit_index: true
+        rest.action.multi.allow_explicit_index: 'true'
       AccessPolicies:
         Version: 2012-10-17
         Statement:

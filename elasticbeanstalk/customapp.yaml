@@ -76,10 +76,10 @@ Resources:
       OptionSettings:
         - Namespace: "aws:autoscaling:asg"
           OptionName: MinSize
-          Value: 1
+          Value: '1'
         - Namespace: "aws:autoscaling:asg"
           OptionName: MaxSize
-          Value: 3
+          Value: '3'
 
         - Namespace: "aws:autoscaling:launchconfiguration"
           OptionName: IamInstanceProfile
@@ -96,7 +96,7 @@ Resources:
 
         - Namespace: "aws:autoscaling:updatepolicy:rollingupdate"
           OptionName: RollingUpdateEnabled
-          Value: true
+          Value: 'true'
         - Namespace: "aws:autoscaling:updatepolicy:rollingupdate"
           OptionName: RollingUpdateType
           Value: Health
@@ -110,23 +110,23 @@ Resources:
 
         - Namespace: "aws:elasticbeanstalk:cloudwatch:logs"
           OptionName: StreamLogs
-          Value: true
+          Value: 'true'
         - Namespace: "aws:elasticbeanstalk:cloudwatch:logs"
           OptionName: DeleteOnTerminate
-          Value: true
+          Value: 'true'
         - Namespace: "aws:elasticbeanstalk:cloudwatch:logs"
           OptionName: RetentionInDays
-          Value: 30
+          Value: '30'
 
         - Namespace: "aws:elasticbeanstalk:cloudwatch:logs:health"
           OptionName: HealthStreamingEnabled
-          Value: true
+          Value: 'true'
         - Namespace: "aws:elasticbeanstalk:cloudwatch:logs:health"
           OptionName: DeleteOnTerminate
-          Value: true
+          Value: 'true'
         - Namespace: "aws:elasticbeanstalk:cloudwatch:logs:health"
           OptionName: RetentionInDays
-          Value: 14
+          Value: '14'
 
         - Namespace: "aws:elasticbeanstalk:command"
           OptionName: DeploymentPolicy
@@ -136,7 +136,7 @@ Resources:
           Value: Fixed
         - Namespace: "aws:elasticbeanstalk:command"
           OptionName: BatchSize
-          Value: 1
+          Value: '1'
 
         - Namespace: "aws:elasticbeanstalk:environment"
           OptionName: ServiceRole
@@ -152,10 +152,10 @@ Resources:
           Value: /hc
         - Namespace: "aws:elasticbeanstalk:environment:process:default"
           OptionName: HealthyThresholdCount
-          Value: 2
+          Value: '2'
         - Namespace: "aws:elasticbeanstalk:environment:process:default"
           OptionName: UnhealthyThresholdCount
-          Value: 2
+          Value: '2'
 
         - Namespace: "aws:elasticbeanstalk:healthreporting:system"
           OptionName: SystemType
@@ -163,11 +163,11 @@ Resources:
 
         - Namespace: "aws:elasticbeanstalk:hostmanager"
           OptionName: LogPublicationControl
-          Value: true
+          Value: 'true'
 
         - Namespace: "aws:elasticbeanstalk:managedactions"
           OptionName: ManagedActionsEnabled
-          Value: true
+          Value: 'true'
         - Namespace: "aws:elasticbeanstalk:managedactions"
           OptionName: PreferredStartTime
           Value: "Tue:22:00"
@@ -176,14 +176,14 @@ Resources:
           Value: minor
         - Namespace: "aws:elasticbeanstalk:managedactions:platformupdate"
           OptionName: InstanceRefreshEnabled
-          Value: true
+          Value: 'true'
 
         - Namespace: "aws:elbv2:loadbalancer"
           OptionName: AccessLogsS3Bucket
           Value: !Ref AccessLogS3Bucket
         - Namespace: "aws:elbv2:loadbalancer"
           OptionName: AccessLogsS3Enabled
-          Value: true
+          Value: 'true'
 
         - Namespace: "aws:elasticbeanstalk:sns:topics"
           OptionName: Notification Endpoint
