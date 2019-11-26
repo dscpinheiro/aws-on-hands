@@ -1,0 +1,163 @@
+Parameters:
+  InstanceType:
+    Type: String
+    Default: t3.micro
+    AllowedValues:
+      - t3.nano
+      - t3.micro
+      - t3.large
+  AmiId:
+    Description: AMI id to use for this instance
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
+  VpcId:
+    Description: VPC this ASG will be launched into
+    Type: AWS::EC2::VPC::Id
+  Subnets:
+    Type: List<AWS::EC2::Subnet::Id>
+
+Resources:
+  InstanceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId: !Ref VpcId
+      GroupDescription: Enable access via HTTP (but only from the ELB)
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        SourceSecurityGroupId:
+          !Ref LoadBalancerSecurityGroup
+  LoadBalancerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId: !Ref VpcId
+      GroupDescription: Enable access via HTTP
+      SecurityGroupIngress:
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+
+  LaunchConfiguration:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Metadata:
+      AWS::CloudFormation::Init:
+        config:
+          packages:
+            yum:
+              httpd: []
+          files:
+            /var/www/html/index.html:
+              content: Hello world!
+
+            /etc/cfn/cfn-hup.conf:
+              content: !Sub |
+                [main]
+                stack=${AWS::StackName}
+                region=${AWS::Region}
+                interval=1
+                verbose=true
+              mode: "000400"
+              owner: "root"
+              group: "root"
+            /etc/cfn/hooks.d/cfn-auto-reloader.conf:
+              content: !Sub |
+                [cfn-auto-reloader-hook]
+                triggers=post.update
+                path=Resources.Ec2Instance.Metadata.AWS::CloudFormation::Init
+                action=/opt/aws/bin/cfn-init --verbose --stack ${AWS::StackName} --resource LaunchConfiguration --region ${AWS::Region}
+                runas=root
+              mode: "000400"
+              owner: "root"
+              group: "root"
+          services:
+            sysvinit:
+              httpd:
+                enabled: true
+                ensureRunning: true
+              cfn-hup:
+                enabled: true
+                ensureRunning: true
+                files:
+                  - /etc/cfn/cfn-hup.conf
+                  - /etc/cfn/hooks.d/cfn-auto-reloader.conf
+    Properties:
+      ImageId: !Ref AmiId
+      InstanceType: !Ref InstanceType
+      SecurityGroups: [!Ref InstanceSecurityGroup]
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash -xe
+          yum install -y aws-cfn-bootstrap
+          /opt/aws/bin/cfn-init --verbose --stack ${AWS::StackName} --resource LaunchConfiguration --region ${AWS::Region}
+          /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource AutoScalingGroup --region ${AWS::Region}
+  AutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      MinSize: '1'
+      MaxSize: '3'
+      VPCZoneIdentifier: !Ref Subnets
+      LaunchConfigurationName: !Ref LaunchConfiguration
+      TargetGroupARNs: [!Ref ELBTargetGroup]
+    CreationPolicy:
+      ResourceSignal:
+        Timeout: PT15M
+        Count: '1'
+    UpdatePolicy:
+      AutoScalingRollingUpdate:
+        MaxBatchSize: 1
+        MinInstancesInService: 1
+        PauseTime: PT15M
+        WaitOnResourceSignals: true
+
+  LoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Subnets: !Ref Subnets
+      SecurityGroups:
+        - !Ref LoadBalancerSecurityGroup
+  ELBListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      Port: 80
+      Protocol: HTTP
+      LoadBalancerArn: !Ref LoadBalancer
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref ELBTargetGroup
+  ELBListenerRule:
+    Type: AWS::ElasticLoadBalancingV2::ListenerRule
+    Properties:
+      Actions:
+        - Type: forward
+          TargetGroupArn: !Ref ELBTargetGroup
+      Conditions:
+        - Field: path-pattern
+          Values:
+          - "*"
+      ListenerArn: !Ref ELBListener
+      Priority: 1
+  ELBTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      HealthCheckIntervalSeconds: 30
+      HealthCheckTimeoutSeconds: 5
+      HealthyThresholdCount: 3
+      UnhealthyThresholdCount: 5
+      Port: 80
+      Protocol: HTTP
+      VpcId: !Ref VpcId
+      TargetGroupAttributes:
+        - Key: stickiness.enabled
+          Value: 'true'
+        - Key: stickiness.type
+          Value: lb_cookie
+        - Key: stickiness.lb_cookie.duration_seconds
+          Value: '60'
+        - Key: deregistration_delay.timeout_seconds
+          Value: '120'
+
+Outputs:
+  URL:
+    Value: !GetAtt LoadBalancer.DNSName
