@@ -4,7 +4,7 @@ This a checklist on learning AWS (based on this great Reddit post: https://www.r
 
 All CloudFormation templates were created in the Oregon (us-west-2) region.
 
-1. Account Basics 
+1. Account Basics
     - [x] Create an IAM user for personal use
     - [x] Set up MFA for your root user, turn off all root user API keys
     - [x] Set up Billing Alerts
@@ -38,7 +38,7 @@ All CloudFormation templates were created in the Oregon (us-west-2) region.
     - [x] Spot instances / fleets => https://github.com/awslabs/ec2-spot-labs/blob/master/workshops/ec2-spot-fleet-web-app/README.md
     - [x] KMS
     - [x] SNS / SQS
-    - [ ] More complex IAM policies (permission boundaries)
+    - [x] More complex IAM policies (permission boundaries)
     - [x] SAM => https://github.com/awslabs/serverless-application-model / https://aws.amazon.com/blogs/compute/developing-net-core-aws-lambda-functions/
     - [x] Networking (creating VPC from scratch)
     - [x] Terraform => https://www.terraform.io/intro/getting-started/build.html / https://github.com/terraform-providers/terraform-provider-aws/tree/master/examples
