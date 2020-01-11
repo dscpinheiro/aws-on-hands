@@ -1,7 +1,0 @@
-Source: https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/dotnet-core-tutorial.html
-
-dotnet publish -o site
-cd site
-zip ../site.zip *
-
-zip dotnet-core-tutorial.zip site.zip aws-windows-deployment-manifest.json
