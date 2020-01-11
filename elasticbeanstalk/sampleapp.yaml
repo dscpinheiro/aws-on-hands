@@ -21,10 +21,10 @@ Resources:
       OptionSettings:
       - Namespace: aws:autoscaling:asg
         OptionName: MinSize
-        Value: 1
+        Value: "1"
       - Namespace: aws:autoscaling:asg
         OptionName: MaxSize
-        Value: 3
+        Value: "3"
       - Namespace: aws:elasticbeanstalk:environment
         OptionName: EnvironmentType
         Value: LoadBalanced

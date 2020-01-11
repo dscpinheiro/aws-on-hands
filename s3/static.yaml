@@ -5,6 +5,7 @@ Resources:
       AccessControl: PublicRead
       WebsiteConfiguration:
         IndexDocument: index.html
+    UpdateReplacePolicy: Retain
     DeletionPolicy: Retain
 
   BucketPolicy:

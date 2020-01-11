@@ -42,6 +42,7 @@ Resources:
   MyWriterInstance:
     Type: AWS::RDS::DBInstance
     UpdateReplacePolicy: Snapshot
+    DeletionPolicy: Snapshot
     Properties:
       AllowMajorVersionUpgrade: false
       AutoMinorVersionUpgrade: true
@@ -54,6 +55,7 @@ Resources:
   MyReaderInstance:
     Type: AWS::RDS::DBInstance
     UpdateReplacePolicy: Snapshot
+    DeletionPolicy: Snapshot
     Properties:
       AllowMajorVersionUpgrade: false
       AutoMinorVersionUpgrade: true

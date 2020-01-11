@@ -16,6 +16,7 @@ Resources:
 
   MyDeliveryS3Bucket:
     Type: AWS::S3::Bucket
+    UpdateReplacePolicy: Retain
     DeletionPolicy: Retain
     Properties:
       VersioningConfiguration:

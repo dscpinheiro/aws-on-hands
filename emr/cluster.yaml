@@ -6,6 +6,7 @@ Parameters:
 Resources:
   MyLoggingS3Bucket:
     Type: AWS::S3::Bucket
+    UpdateReplacePolicy: Retain
     DeletionPolicy: Retain
 
   MyCluster:

@@ -26,6 +26,7 @@ Resources:
               StorageClass: STANDARD_IA
             - TransitionInDays: 180
               StorageClass: GLACIER
+    UpdateReplacePolicy: Retain
     DeletionPolicy: Retain
 
 Outputs:
