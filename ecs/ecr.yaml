@@ -2,7 +2,7 @@ Resources:
   MyRepository:
     Type: AWS::ECR::Repository
     Properties:
-      RepositoryName: sample-repository
+      RepositoryName: !Sub "${AWS::StackName}-sample-repository"
       LifecyclePolicy:
         LifecyclePolicyText: '{ "rules": [{ "rulePriority": 1, "description": "Expire images older than 14 days", "selection": { "tagStatus": "untagged", "countType": "sinceImagePushed", "countUnit": "days", "countNumber": 14 }, "action": { "type": "expire" } }] }'
       RepositoryPolicyText:
@@ -20,6 +20,11 @@ Resources:
               - "ecr:InitiateLayerUpload"
               - "ecr:UploadLayerPart"
               - "ecr:CompleteLayerUpload"
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W28
+            reason: Stack name is used a prefix for the repository name
 
 Outputs:
   RepositoryArn:

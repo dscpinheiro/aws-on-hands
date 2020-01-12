@@ -18,7 +18,10 @@ Resources:
         InstanceCount: 2
         ZoneAwarenessEnabled: true
         InstanceType: m4.large.elasticsearch
-      ElasticsearchVersion: '6.0'
+      ElasticsearchVersion: '7.1'
+      EncryptionAtRestOptions:
+        Enabled: true
+        KmsKeyId: alias/aws/es
       EBSOptions:
         EBSEnabled: true
         Iops: 0

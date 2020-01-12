@@ -1,6 +1,7 @@
 Parameters:
   KmsKeyId:
-    Description: Master key that will be used to encrypt the queue
+    Description: Key that will be used to encrypt the queue
+    Default: alias/aws/sqs
     Type: String
 
 Resources:

@@ -39,10 +39,21 @@ Resources:
         FromPort: 80
         ToPort: 80
         CidrIp: 0.0.0.0/0
+        Description: HTTP access
       - IpProtocol: tcp
         FromPort: 22
         ToPort: 22
         CidrIp: !Ref SSHLocation
+        Description: SSH access
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: F1000
+            reason: All traffic outbound can be allowed
+          - id: W2
+            reason: Cidr is limited to port 80
+          - id: W9
+            reason: Cidr is limited to port 80
 
   InstanceProfile:
     Type: AWS::IAM::InstanceProfile
@@ -71,6 +82,11 @@ Resources:
                 Action:
                   - dynamodb:ListTables
                 Resource: "*"
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W11
+            reason: ListTables action does not support resource level permissions
 
   Ec2Instance:
     Type: AWS::EC2::Instance

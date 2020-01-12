@@ -50,6 +50,12 @@ Resources:
         FromPort: 22
         ToPort: 22
         CidrIp: !Ref SSHLocation
+        Description: SSH access
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: F1000
+            reason: All traffic outbound can be allowed
 
   InstanceProfile:
     Type: AWS::IAM::InstanceProfile

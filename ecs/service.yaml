@@ -114,3 +114,8 @@ Resources:
                 "Resource": "*"
               }]
             }
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W28
+            reason: Stack name is used a suffix for the role name

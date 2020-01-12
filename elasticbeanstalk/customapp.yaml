@@ -48,7 +48,18 @@ Resources:
 
   AccessLogS3Bucket:
     Type: AWS::S3::Bucket
+    UpdateReplacePolicy: Retain
     DeletionPolicy: Retain
+    Properties:
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W35
+            reason: Bucket does not need access logging
   AccessLogS3BucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:

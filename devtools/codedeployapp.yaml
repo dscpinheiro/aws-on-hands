@@ -27,9 +27,16 @@ Resources:
       MinimumHealthyHosts:
         Type: !Ref MinHealthyHostsType
         Value: !Ref MinHealthyHostsValue
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W28
+            reason: Application name is passed as a parameter
 
   MyTriggerStatusTopic:
     Type: AWS::SNS::Topic
+    Properties:
+      KmsMasterKeyId: alias/aws/sns
 
   MyDeploymentGroup:
     Type: AWS::CodeDeploy::DeploymentGroup
@@ -53,6 +60,11 @@ Resources:
       DeploymentStyle:
         DeploymentType: IN_PLACE
         DeploymentOption: WITHOUT_TRAFFIC_CONTROL
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W28
+            reason: Application name is passed as a parameter
 
 Outputs:
   ApplicationArn:

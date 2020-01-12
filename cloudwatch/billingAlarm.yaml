@@ -28,6 +28,11 @@ Resources:
       ComparisonOperator: GreaterThanThreshold
       AlarmActions:
         - !Ref SnsTopicArn
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W28
+            reason: Alarm name can be fixed
 
 Outputs:
   AlarmArn:

@@ -1,3 +1,5 @@
+Description: Meant to be used as an example only. Better approach is private S3 Bucket + CloudFront.
+
 Resources:
   S3Bucket:
     Type: AWS::S3::Bucket
@@ -7,6 +9,15 @@ Resources:
         IndexDocument: index.html
     UpdateReplacePolicy: Retain
     DeletionPolicy: Retain
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W31
+            reason: Bucket is meant to be used for website hosting
+          - id: W35
+            reason: Bucket is meant to be used for website hosting
+          - id: W41
+            reason: Bucket is meant to be used for website hosting
 
   BucketPolicy:
     Type: AWS::S3::BucketPolicy
@@ -20,6 +31,11 @@ Resources:
             Action: s3:GetObject
             Resource: !Join ["", ["arn:aws:s3:::", !Ref S3Bucket, "/*"]]
       Bucket: !Ref S3Bucket
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: F16
+            reason: Bucket is meant to be used for website hosting
 
 Outputs:
   WebsiteURL:

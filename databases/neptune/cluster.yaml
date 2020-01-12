@@ -19,6 +19,7 @@ Resources:
       IamAuthEnabled: true
       Port: 8182
       PreferredBackupWindow: 02:00-05:00
+      StorageEncrypted: true
 
   DbInstance:
     Type: AWS::Neptune::DBInstance

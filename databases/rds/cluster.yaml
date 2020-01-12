@@ -38,6 +38,7 @@ Resources:
       Port: 3306
       PreferredBackupWindow: 01:00-03:00
       PreferredMaintenanceWindow: sun:03:30-sun:05:30
+      StorageEncrypted: true
 
   MyWriterInstance:
     Type: AWS::RDS::DBInstance
@@ -52,6 +53,12 @@ Resources:
       DBInstanceClass: !Ref DbInstanceClass
       DBInstanceIdentifier: my-cloudformation-writer
       Engine: aurora-mysql
+      PubliclyAccessible: false
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W28
+            reason: Instance identifier can be fixed
   MyReaderInstance:
     Type: AWS::RDS::DBInstance
     UpdateReplacePolicy: Snapshot
@@ -65,6 +72,12 @@ Resources:
       DBInstanceClass: !Ref DbInstanceClass
       DBInstanceIdentifier: my-cloudformation-reader
       Engine: aurora-mysql
+      PubliclyAccessible: false
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W28
+            reason: Instance identifier can be fixed
 
   MySubnetGroup:
     Type: AWS::RDS::DBSubnetGroup
@@ -91,6 +104,7 @@ Resources:
     Properties:
       DisplayName: Topic for RDS events
       TopicName: RdsEventsTopic
+      KmsMasterKeyId: alias/aws/sns
       Subscription:
         - Endpoint: !Ref Email
           Protocol: email

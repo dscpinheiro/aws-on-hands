@@ -21,17 +21,21 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       VpcId: !Ref VpcId
-      GroupName: SG for EC2 instance
       GroupDescription: Enable access via SSH
       SecurityGroupIngress:
       - IpProtocol: tcp
         FromPort: 22
         ToPort: 22
         CidrIp: !Ref SSHLocation
+        Description: SSH access
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: F1000
+            reason: All traffic outbound can be allowed
   MountTargetSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupName: SG for EFS mount target
       GroupDescription: Enable access via NFS
       VpcId: !Ref VpcId
       SecurityGroupIngress:
@@ -39,6 +43,12 @@ Resources:
         FromPort: 2049
         ToPort: 2049
         SourceSecurityGroupId: !Ref EC2SecurityGroup
+        Description: NFS access
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: F1000
+            reason: All traffic outbound can be allowed
 
   MyFileSystem:
     Type: AWS::EFS::FileSystem

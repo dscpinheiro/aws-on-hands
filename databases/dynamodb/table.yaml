@@ -18,6 +18,11 @@ Resources:
       TableName: AlbumSales
       StreamSpecification:
         StreamViewType: NEW_AND_OLD_IMAGES
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W28
+            reason: Table name can be fixed
 
 Outputs:
   TableArn:

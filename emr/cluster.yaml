@@ -8,6 +8,18 @@ Resources:
     Type: AWS::S3::Bucket
     UpdateReplacePolicy: Retain
     DeletionPolicy: Retain
+    Properties:
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W35
+            reason: Bucket does not need access logging
+          - id: W51
+            reason: Bucket does not require a bucket policy
 
   MyCluster:
     Type: AWS::EMR::Cluster
@@ -31,7 +43,7 @@ Resources:
       Name: MyCluster
       JobFlowRole: EMR_EC2_DefaultRole
       ServiceRole: EMR_DefaultRole
-      ReleaseLabel: emr-5.16.0
+      ReleaseLabel: emr-5.28.0
 
 Outputs:
   ClusterDNS:

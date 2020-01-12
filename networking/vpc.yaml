@@ -79,6 +79,11 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub "${Environment}-public-subnet1"
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W33
+            reason: Subnet is meant for public hosts
   PublicSubnet2:
     Type: AWS::EC2::Subnet
     Properties:
@@ -91,6 +96,11 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub "${Environment}-public-subnet2"
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W33
+            reason: Subnet is meant for public hosts
   PrivateSubnet1:
     Type: AWS::EC2::Subnet
     Properties:
@@ -260,10 +270,20 @@ Resources:
         FromPort: 443
         ToPort: 443
         CidrIp: "0.0.0.0/0"
+        Description: HTTPS access
       VpcId: !Ref MyVpc
       Tags:
         - Key: Name
           Value: !Sub "${Environment}-endpoint-sg"
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: F1000
+            reason: All traffic outbound can be allowed
+          - id: W2
+            reason: Cidr is limited to port 443
+          - id: W9
+            reason: Cidr is limited to port 443
 
   VpcFlowLogGroup:
     Type: AWS::Logs::LogGroup
@@ -295,6 +315,11 @@ Resources:
                   - logs:DescribeLogGroups
                   - logs:DescribeLogStreams
                 Resource: "*"
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W11
+            reason: Actions are limited to CloudWatch Logs (https://docs.aws.amazon.com/vpc/latest/userguide/flow-logs-cwl.html#flow-logs-iam)
   VpcFlowLog:
     Type: AWS::EC2::FlowLog
     Properties:

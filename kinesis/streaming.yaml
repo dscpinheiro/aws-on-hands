@@ -7,12 +7,17 @@ Resources:
   MyDataStream:
     Type: AWS::Kinesis::Stream
     Properties:
-      Name: my-data-stream
+      Name: !Sub "${AWS::StackName}-my-data-stream"
       RetentionPeriodHours: 36
       ShardCount: 1
       StreamEncryption:
         EncryptionType: KMS
         KeyId: !Ref EncryptionKey
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W28
+            reason: Stack name is used a prefix for the data stream name
 
   MyDeliveryS3Bucket:
     Type: AWS::S3::Bucket
@@ -25,6 +30,13 @@ Resources:
         ServerSideEncryptionConfiguration:
           - ServerSideEncryptionByDefault:
               SSEAlgorithm: AES256
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W35
+            reason: Bucket does not need access logging
+          - id: W51
+            reason: Bucket does not require a bucket policy
 
   MyDeliveryRole:
     Type: AWS::IAM::Role

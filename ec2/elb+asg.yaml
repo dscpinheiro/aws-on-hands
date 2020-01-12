@@ -28,6 +28,12 @@ Resources:
         ToPort: 80
         SourceSecurityGroupId:
           !Ref LoadBalancerSecurityGroup
+        Description: HTTP access from the ELB
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: F1000
+            reason: All traffic outbound can be allowed
   LoadBalancerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -38,6 +44,16 @@ Resources:
         FromPort: 80
         ToPort: 80
         CidrIp: 0.0.0.0/0
+        Description: HTTP access from the internet
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: F1000
+            reason: All traffic outbound can be allowed
+          - id: W2
+            reason: Cidr is limited to port 80
+          - id: W9
+            reason: Cidr is limited to port 80
 
   LaunchConfiguration:
     Type: AWS::AutoScaling::LaunchConfiguration
@@ -117,6 +133,11 @@ Resources:
       Subnets: !Ref Subnets
       SecurityGroups:
         - !Ref LoadBalancerSecurityGroup
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W52
+            reason: No access logging required
   ELBListener:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:

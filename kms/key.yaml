@@ -10,6 +10,7 @@ Resources:
               AWS: !Join ["", ["arn:aws:iam::", !Ref "AWS::AccountId", ":root"]]
             Action: "kms:*"
             Resource: "*"
+      EnableKeyRotation: true
       Tags:
         - Key: owner
           Value: admin

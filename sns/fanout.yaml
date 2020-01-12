@@ -11,6 +11,11 @@ Resources:
       DelaySeconds: 3
       MessageRetentionPeriod: 604800
       VisibilityTimeout: 600
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W48
+            reason: Encrypted queues require extra steps when configuring CMKs (https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-key-management.html#compatibility-with-aws-services)
 
   MyQueue2:
     Type: AWS::SQS::Queue
@@ -19,6 +24,11 @@ Resources:
       MaximumMessageSize: 262144
       ReceiveMessageWaitTimeSeconds: 20
       VisibilityTimeout: 300
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W48
+            reason: Encrypted queues require extra steps when configuring CMKs (https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-key-management.html#compatibility-with-aws-services)
 
   MyQueuePolicy:
     Type: AWS::SQS::QueuePolicy
@@ -32,17 +42,23 @@ Resources:
             Principal:
               AWS: "*"
             Action:
-              - "sqs:SendMessage"
+              - "SQS:SendMessage"
             Resource: "*"
             Condition:
               ArnEquals:
                 "aws:SourceArn": !Ref MySnsTopic
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: F21
+            reason: Policy uses condition to limit access from SNS topic
 
   MySnsTopic:
     Type: AWS::SNS::Topic
     Properties:
       DisplayName: Sample topic that sends messages to two SQS queues
       TopicName: FanoutTopic
+      KmsMasterKeyId: alias/aws/sns
       Subscription:
         - Endpoint: !GetAtt MyQueue1.Arn
           Protocol: sqs

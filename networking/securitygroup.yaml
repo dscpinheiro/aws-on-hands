@@ -19,13 +19,24 @@ Resources:
           FromPort: 80
           ToPort: 80
           CidrIp: 0.0.0.0/0
+          Description: HTTP access
         - IpProtocol: tcp
           FromPort: 443
           ToPort: 443
           CidrIp: 0.0.0.0/0
+          Description: HTTPS access
       Tags:
         - Key: Name
           Value: !Sub "${Environment}-webapp-sg"
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: F1000
+            reason: All traffic outbound can be allowed
+          - id: W2
+            reason: Cidr is limited to ports 80 / 443
+          - id: W9
+            reason: Cidr is limited to ports 80 / 443
 
 Outputs:
   SecurityGroupId:

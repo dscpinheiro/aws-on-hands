@@ -26,8 +26,20 @@ Resources:
               StorageClass: STANDARD_IA
             - TransitionInDays: 180
               StorageClass: GLACIER
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
     UpdateReplacePolicy: Retain
     DeletionPolicy: Retain
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W35
+            reason: Bucket is meant to be used for access logging
+          - id: W51
+            reason: Bucket does not require a bucket policy
 
 Outputs:
   BucketName:

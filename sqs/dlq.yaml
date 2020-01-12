@@ -2,6 +2,12 @@ Parameters:
   AlarmEmail:
     Description: Email address to notify if operational problems arise
     Type: String
+  SQSEncryptionKey:
+    Default: alias/aws/sqs
+    Type: String
+  SNSEncryptionKey:
+    Default: alias/aws/sns
+    Type: String
 
 Resources:
   MainQueue:
@@ -13,11 +19,13 @@ Resources:
       RedrivePolicy:
         deadLetterTargetArn: !GetAtt DeadLetterQueue.Arn
         maxReceiveCount: 3
+      KmsMasterKeyId: !Ref SQSEncryptionKey
 
   DeadLetterQueue:
     Type: AWS::SQS::Queue
     Properties:
       QueueName: MyDeadLetterQueue
+      KmsMasterKeyId: !Ref SQSEncryptionKey
 
   AlarmTopic:
     Type: AWS::SNS::Topic
@@ -25,6 +33,7 @@ Resources:
       Subscription:
         - Endpoint: !Ref AlarmEmail
           Protocol: email
+      KmsMasterKeyId: !Ref SNSEncryptionKey
   QueueDepthAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
