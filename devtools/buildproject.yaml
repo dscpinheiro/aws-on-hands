@@ -19,6 +19,7 @@ Resources:
 
   MyArtifactsBucket:
     Type: AWS::S3::Bucket
+    UpdateReplacePolicy: Retain
     DeletionPolicy: Retain
   MyBuildProject:
     Type: AWS::CodeBuild::Project
