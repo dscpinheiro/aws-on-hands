@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@aws-cdk/aws-ec2": "1.48.0",
+    "@aws-cdk/aws-efs": "1.48.0",
     "@aws-cdk/aws-kms": "1.48.0",
     "@aws-cdk/aws-sns": "1.48.0",
     "@aws-cdk/aws-sns-subscriptions": "1.48.0",
