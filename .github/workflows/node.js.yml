@@ -21,6 +21,7 @@ jobs:
         node-version: ${{ matrix.node-version }}   
     - name: Run cdk synth
       run: |
+        npm install -g aws-cdk
         cd cdk
         npm ci
         npm run build
